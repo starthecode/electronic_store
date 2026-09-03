@@ -30,3 +30,5 @@ server/.agents/
 server/.claude/
 server/.cursor/
 server/.devin/
+
+server/src/generated/prisma/
