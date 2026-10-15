@@ -5,6 +5,7 @@ import { comparePassword } from "../utils/password.js";
 import { generateToken } from "../utils/jwt.js";
 import { AppError } from "../utils/AppError.js";
 import { successResponse } from "../utils/apiResponse.js";
+import type { AuthenticatedRequest } from "../middleware/auth.middleware.js";
 
 export const login = async (
   req: Request,
@@ -57,6 +58,7 @@ export const login = async (
   const token = generateToken({
     userId: user.id,
     roleId: user.roleId,
+    roleName: user.role.name,
   });
 
   res.cookie("auth_token", token, {
@@ -94,25 +96,12 @@ export const login = async (
 };
 
 export const me = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response
 ) => {
-  const authReq = req as Request & {
-    user?: {
-      userId: string;
-    };
-  };
-
-  if (!authReq.user) {
-    throw new AppError(
-      "Authentication required",
-      401
-    );
-  }
-
   const user = await prisma.user.findUnique({
     where: {
-      id: authReq.user.userId,
+      id: req.user!.userId,
     },
     include: {
       role: true,
@@ -141,26 +130,18 @@ export const me = async (
 };
 
 export const logout = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response
 ) => {
-  const authReq = req as Request & {
-    user?: {
-      userId: string;
-    };
-  };
-
-  if (authReq.user?.userId) {
-    await prisma.auditLog.create({
-      data: {
-        userId: authReq.user.userId,
-        action: "LOGOUT",
-        entity: "User",
-        entityId: authReq.user.userId,
-        description: "User logged out",
-      },
-    });
-  }
+  await prisma.auditLog.create({
+    data: {
+      userId: req.user!.userId,
+      action: "LOGOUT",
+      entity: "User",
+      entityId: req.user!.userId,
+      description: "User logged out",
+    },
+  });
 
   res.clearCookie("auth_token", {
     httpOnly: true,

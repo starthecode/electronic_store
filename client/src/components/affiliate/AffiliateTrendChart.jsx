@@ -1,0 +1,50 @@
+import { useMemo } from "react";
+
+export default function AffiliateTrendChart({ trends = [], loading }) {
+  const chart = useMemo(() => {
+    if (!trends.length) return null;
+    const width = 900, height = 280, padX = 42, padY = 30;
+    const max = Math.max(...trends.map((x) => Number(x.clicks || 0)), 1);
+    const points = trends.map((item, i) => ({
+      ...item,
+      x: padX + (i / Math.max(trends.length - 1, 1)) * (width - padX * 2),
+      y: height - padY - (Number(item.clicks || 0) / max) * (height - padY * 2),
+    }));
+    return { width, height, padX, padY, points };
+  }, [trends]);
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h3 className="text-base font-semibold text-gray-900">Click Trend</h3>
+      <p className="mt-1 text-sm text-gray-500">Daily affiliate clicks for the selected period.</p>
+      {loading ? (
+        <div className="mt-5 h-64 animate-pulse rounded-xl bg-gray-100" />
+      ) : !chart ? (
+        <div className="mt-5 flex h-64 items-center justify-center rounded-xl bg-gray-50 text-sm text-gray-500">
+          No click data for this period.
+        </div>
+      ) : (
+        <div className="mt-5 overflow-x-auto">
+          <svg viewBox={`0 0 ${chart.width} ${chart.height}`} className="h-64 min-w-[700px] w-full">
+            {[0, .25, .5, .75, 1].map((ratio) => {
+              const y = chart.height - chart.padY - ratio * (chart.height - chart.padY * 2);
+              return <line key={ratio} x1={chart.padX} x2={chart.width - chart.padX} y1={y} y2={y} stroke="currentColor" className="text-gray-100" />;
+            })}
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-orange-500"
+              points={chart.points.map((p) => `${p.x},${p.y}`).join(" ")}
+            />
+            {chart.points.map((p) => <circle key={p.date} cx={p.x} cy={p.y} r="4" className="fill-orange-500" />)}
+            <text x={chart.padX} y={chart.height - 7} className="fill-gray-400 text-[11px]">{chart.points[0].date}</text>
+            <text x={chart.width - chart.padX} y={chart.height - 7} textAnchor="end" className="fill-gray-400 text-[11px]">{chart.points.at(-1).date}</text>
+          </svg>
+        </div>
+      )}
+    </div>
+  );
+}

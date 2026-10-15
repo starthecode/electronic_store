@@ -21,6 +21,10 @@ const prisma = new PrismaClient({
 const main = async () => {
   console.log("Seeding database...");
 
+  // --------------------------------------------------
+  // Permissions
+  // --------------------------------------------------
+
   const permissions = [
     "dashboard.view",
 
@@ -28,6 +32,9 @@ const main = async () => {
     "users.create",
     "users.update",
     "users.delete",
+
+    "customers.read",
+    "customers.update",
 
     "products.read",
     "products.create",
@@ -55,10 +62,14 @@ const main = async () => {
     "discounts.update",
     "discounts.delete",
 
+    "payments.read",
+    "payments.update",
+
     "settings.read",
     "settings.update",
 
     "audit_logs.read",
+    "affiliate_reports.read",
   ];
 
   for (const permissionName of permissions) {
@@ -74,21 +85,38 @@ const main = async () => {
     });
   }
 
-  const superAdminRole =
-    await prisma.role.upsert({
-      where: {
-        name: "SUPER_ADMIN",
-      },
-      update: {},
-      create: {
-        name: "SUPER_ADMIN",
-        description:
-          "Full access to the administration system",
-      },
-    });
+  // --------------------------------------------------
+  // Roles
+  // --------------------------------------------------
 
-  const allPermissions =
-    await prisma.permission.findMany();
+  const superAdminRole = await prisma.role.upsert({
+    where: {
+      name: "SUPER_ADMIN",
+    },
+    update: {},
+    create: {
+      name: "SUPER_ADMIN",
+      description:
+        "Full access to the administration system",
+    },
+  });
+
+  await prisma.role.upsert({
+    where: {
+      name: "CUSTOMER",
+    },
+    update: {},
+    create: {
+      name: "CUSTOMER",
+      description: "Customer account",
+    },
+  });
+
+  // --------------------------------------------------
+  // Assign all permissions to SUPER_ADMIN
+  // --------------------------------------------------
+
+  const allPermissions = await prisma.permission.findMany();
 
   for (const permission of allPermissions) {
     await prisma.rolePermission.upsert({
@@ -106,33 +134,176 @@ const main = async () => {
     });
   }
 
+  // --------------------------------------------------
+  // Admin User
+  // --------------------------------------------------
+
   const passwordHash = await hashPassword(
     "Admin@12345"
   );
 
-  const admin =
-    await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
+    where: {
+      email: "admin@electronicstore.com",
+    },
+    update: {
+      roleId: superAdminRole.id,
+      status: "ACTIVE",
+    },
+    create: {
+      firstName: "Super",
+      lastName: "Admin",
+      email: "admin@electronicstore.com",
+      passwordHash,
+      roleId: superAdminRole.id,
+      status: "ACTIVE",
+    },
+  });
+
+  console.log(`Admin created: ${admin.email}`);
+
+  // --------------------------------------------------
+  // Affiliate Marketplaces
+  // --------------------------------------------------
+
+  const affiliateMarketplaces = [
+    {
+      name: "Amazon",
+      code: "AMAZON",
+      baseUrl: "https://www.amazon.in",
+    },
+    {
+      name: "Flipkart",
+      code: "FLIPKART",
+      baseUrl: "https://www.flipkart.com",
+    },
+  ];
+
+  for (const marketplace of affiliateMarketplaces) {
+    await prisma.affiliateMarketplace.upsert({
       where: {
-        email: "admin@electronicstore.com",
+        code: marketplace.code,
       },
       update: {
-        roleId: superAdminRole.id,
+        name: marketplace.name,
+        baseUrl: marketplace.baseUrl,
         status: "ACTIVE",
       },
       create: {
-        firstName: "Super",
-        lastName: "Admin",
-        email: "admin@electronicstore.com",
-        passwordHash,
-        roleId: superAdminRole.id,
+        name: marketplace.name,
+        code: marketplace.code,
+        baseUrl: marketplace.baseUrl,
         status: "ACTIVE",
       },
     });
+  }
 
-  console.log(
-    `Admin created: ${admin.email}`
-  );
+  // --------------------------------------------------
+  // Default Settings
+  // --------------------------------------------------
+
+  const defaultSettings = [
+    {
+      key: "store.name",
+      value: "Electronic Store",
+      category: "STORE",
+      description: "Public store name",
+    },
+    {
+      key: "store.email",
+      value: "admin@electronicstore.com",
+      category: "STORE",
+      description: "Primary store email address",
+    },
+    {
+      key: "currency.code",
+      value: "INR",
+      category: "CURRENCY",
+      description: "Default store currency",
+    },
+    {
+      key: "currency.symbol",
+      value: "₹",
+      category: "CURRENCY",
+      description: "Default currency symbol",
+    },
+    {
+      key: "tax.enabled",
+      value: true,
+      category: "TAX",
+      description: "Whether tax calculation is enabled",
+    },
+    {
+      key: "shipping.enabled",
+      value: true,
+      category: "SHIPPING",
+      description: "Whether shipping is enabled",
+    },
+    {
+      key: "orders.autoConfirm",
+      value: false,
+      category: "ORDERS",
+      description:
+        "Automatically confirm newly created orders",
+    },
+    {
+      key: "inventory.lowStockThreshold",
+      value: 5,
+      category: "INVENTORY",
+      description: "Default low-stock threshold",
+    },
+    {
+      key: "payments.cod.enabled",
+      value: true,
+      category: "PAYMENTS",
+      description: "Enable cash on delivery",
+    },
+    {
+      key: "payments.online.enabled",
+      value: true,
+      category: "PAYMENTS",
+      description: "Enable online payments",
+    },
+    {
+      key: "affiliate.enabled",
+      value: true,
+      category: "AFFILIATE",
+      description:
+        "Enable affiliate products on the storefront",
+    },
+    {
+      key: "notifications.email.enabled",
+      value: true,
+      category: "NOTIFICATIONS",
+      description:
+        "Enable email notifications",
+    },
+  ];
+
+  for (const setting of defaultSettings) {
+    await prisma.setting.upsert({
+      where: {
+        key: setting.key,
+      },
+      update: {
+        category: setting.category as any,
+        description: setting.description,
+      },
+      create: {
+        key: setting.key,
+        value: setting.value,
+        category: setting.category as any,
+        description: setting.description,
+      },
+    });
+  }
+
+  console.log("Seed completed successfully.");
 };
+
+// --------------------------------------------------
+// Run Seed
+// --------------------------------------------------
 
 main()
   .catch((error) => {

@@ -12,6 +12,7 @@ export interface AuthenticatedRequest
   user?: {
     userId: string;
     roleId: string;
+    roleName: string;
   };
 }
 

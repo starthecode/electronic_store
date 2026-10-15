@@ -9,6 +9,8 @@ if (!JWT_SECRET) {
 export interface AuthTokenPayload {
   userId: string;
   roleId: string;
+  roleName: string;
+
 }
 
 export const generateToken = (

@@ -1,11 +1,24 @@
-function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold">
-        Electronic Store Admin
-      </h1>
-    </div>
-  )
-}
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import {
+  BrowserRouter,
+} from "react-router-dom";
 
-export default App
+import AdminRoutes from "./routes/AdminRoutes";
+import { initializeAuth } from "./store/slices/authSlice";
+
+const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
+  return (
+    <BrowserRouter>
+      <AdminRoutes />
+    </BrowserRouter>
+  );
+};
+
+export default App;

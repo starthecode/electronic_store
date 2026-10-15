@@ -122,6 +122,30 @@ enum SettingType {
   JSON
 }
 
+enum AffiliateMarketplaceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AffiliateProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SettingCategory {
+  GENERAL
+  STORE
+  CURRENCY
+  TAX
+  SHIPPING
+  ORDERS
+  INVENTORY
+  PAYMENTS
+  AFFILIATE
+  NOTIFICATIONS
+  SYSTEM
+}
+
 // ============================================================
 // USERS / AUTHORIZATION
 // ============================================================
@@ -204,6 +228,7 @@ model Category {
 
   products  Product[]
   discounts DiscountCategory[]
+  affiliateProducts AffiliateProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -221,6 +246,7 @@ model Brand {
   status      BrandStatus @default(ACTIVE)
 
   products Product[]
+  affiliateProducts AffiliateProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -259,9 +285,9 @@ model Product {
 model ProductVariant {
   id        String @id @default(uuid()) @db.Uuid
   productId String @db.Uuid
-
-  sku  String  @unique
   name String?
+  sku  String  @unique
+ 
 
   price          Decimal  @db.Decimal(12, 2)
   compareAtPrice Decimal? @db.Decimal(12, 2)
@@ -348,7 +374,6 @@ model SpecificationGroup {
   sortOrder Int    @default(0)
 
   specifications Specification[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -419,6 +444,82 @@ model InventoryTransaction {
   @@index([type])
   @@index([createdAt])
 }
+
+
+model AffiliateMarketplace {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  code        String   @unique
+  logoUrl     String?
+  baseUrl     String?
+  status      AffiliateMarketplaceStatus @default(ACTIVE)
+
+  products    AffiliateProduct[]
+  clicks   AffiliateClick[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+}
+
+model AffiliateProduct {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  slug              String   @unique
+  shortDescription  String?
+  description       String?
+
+  imageUrl          String?
+
+  categoryId        String?  @db.Uuid
+  brandId           String?  @db.Uuid
+
+  marketplaceId     String   @db.Uuid
+  externalProductId String?
+  productUrl        String?
+  affiliateUrl      String
+
+  displayPrice      Decimal? @db.Decimal(12, 2)
+
+  status            AffiliateProductStatus @default(ACTIVE)
+
+  marketplace       AffiliateMarketplace @relation(fields: [marketplaceId],references: [id])
+
+  category          Category? @relation(fields: [categoryId],references: [id],onDelete: SetNull)
+
+  brand             Brand? @relation(fields: [brandId],references: [id],onDelete: SetNull)
+
+  clicks AffiliateClick[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([marketplaceId])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AffiliateClick {
+  id                String   @id @default(uuid()) @db.Uuid
+  affiliateProductId String   @db.Uuid
+  marketplaceId     String   @db.Uuid
+  ipHash            String?
+  userAgent         String?
+  referrer          String?
+  clickedAt         DateTime @default(now())
+
+  affiliateProduct AffiliateProduct @relation(fields: [affiliateProductId],references: [id],onDelete: Cascade)
+
+  marketplace AffiliateMarketplace @relation(fields: [marketplaceId],references: [id],onDelete: Cascade)
+
+  @@index([affiliateProductId])
+  @@index([marketplaceId])
+  @@index([clickedAt])
+}
+
 
 // ============================================================
 // ORDERS
@@ -668,13 +769,15 @@ model AuditLog {
 // ============================================================
 
 model Setting {
-  id String @id @default(uuid()) @db.Uuid
-
-  key         String      @unique
-  value       String
-  type        SettingType @default(STRING)
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  value       Json
+  category    SettingCategory
+  isSensitive Boolean  @default(false)
   description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([category])
+  @@index([isSensitive])
 }
