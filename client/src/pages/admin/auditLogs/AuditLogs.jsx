@@ -136,7 +136,7 @@ const AuditLogs = () => {
 
         setError(
           err?.response?.data?.message ||
-            "Failed to load audit logs."
+          "Failed to load audit logs."
         );
       } finally {
         setLoading(false);

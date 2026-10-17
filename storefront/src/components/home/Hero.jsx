@@ -40,7 +40,7 @@ const Hero = () => {
         </div>
 
         <div className="absolute bottom-[-20px] left-8 select-none text-[90px] font-bold tracking-[-6px] text-white/80 sm:left-16 sm:text-[130px]">
-          Gearadge
+          Magdeal
         </div>
       </div>
     </section>
