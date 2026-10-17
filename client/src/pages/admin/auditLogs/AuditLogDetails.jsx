@@ -68,7 +68,7 @@ const AuditLogDetails = () => {
 
         setError(
           err?.response?.data?.message ||
-            "Failed to load audit log."
+          "Failed to load audit log."
         );
       } finally {
         setLoading(false);
@@ -131,7 +131,7 @@ const AuditLogDetails = () => {
 
   const metadata =
     log.metadata &&
-    typeof log.metadata === "object"
+      typeof log.metadata === "object"
       ? log.metadata
       : null;
 
@@ -266,7 +266,7 @@ const AuditLogDetails = () => {
             </div>
 
             {metadata &&
-            Object.keys(metadata).length > 0 ? (
+              Object.keys(metadata).length > 0 ? (
               <pre className="overflow-x-auto rounded-xl border border-gray-200 bg-gray-50 p-4 font-mono text-xs leading-6 text-gray-700">
                 {JSON.stringify(
                   metadata,
