@@ -11,7 +11,7 @@ import {
   getAuditLog,
 } from "../../../services/auditLog.service";
 
-import AuditLogActionBadge from "../../../components/auditLogs/AuditLogActionBadge";
+import AuditLogActionBadge from "../../../components/auditLogsComp/AuditLogActionBadge";
 
 const formatDateTime = (value) => {
   if (!value) return "—";

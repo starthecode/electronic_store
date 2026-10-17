@@ -10,8 +10,8 @@ import {
   getAuditLogs,
 } from "../../../services/auditLog.service";
 
-import AuditLogActionBadge from "../../../components/auditLogs/AuditLogActionBadge";
-import AuditLogFilters from "../../../components/auditLogs/AuditLogFilters";
+import AuditLogActionBadge from "../../../components/auditLogsComp/AuditLogActionBadge";
+import AuditLogFilters from "../../../components/auditLogsComp/AuditLogFilters";
 
 const INITIAL_FILTERS = {
   search: "",
