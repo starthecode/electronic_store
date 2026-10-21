@@ -679,7 +679,7 @@ const Shop = () => {
                                 <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
                                     {products.map((product) => (
                                         <ProductCard
-                                            key={product.id}
+                                            key={`${product.type || "regular"}-${product.id}`}
                                             product={product}
                                         />
                                     ))}

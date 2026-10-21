@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProductCard from "../ui/ProductCard";
@@ -36,7 +36,7 @@ const ProductCarousel = ({ title, products = [] }) => {
         >
           {products.map((product) => (
             <div
-              key={product.id}
+              key={`${product.type || "regular"}-${product.id}`}
               className="w-[calc(50%-6px)] shrink-0 sm:w-[calc(33.333%-8px)] lg:w-[calc(25%-9px)]"
             >
               <ProductCard product={product} />

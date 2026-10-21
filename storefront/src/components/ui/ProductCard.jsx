@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ArrowUpRight, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { getAffiliateRedirectUrl } from "../../services/storeProduct.service";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
+  const isAffiliateProduct = product.type === "affiliate";
+  const affiliateRedirectUrl = isAffiliateProduct
+    ? getAffiliateRedirectUrl(product.id)
+    : null;
+  const ProductLink = isAffiliateProduct ? "a" : Link;
+  const productLinkProps = isAffiliateProduct
+    ? {
+        href: affiliateRedirectUrl,
+        target: "_blank",
+        rel: "noopener",
+      }
+    : { to: `/products/${product.slug}` };
 
-  const image =
-    product.images?.find((item) => item.isPrimary)?.url ||
-    product.images?.[0]?.url ||
-    "/placeholder-product.jpg";
+  const image = isAffiliateProduct
+    ? product.imageUrl || "/placeholder-product.jpg"
+    : product.images?.find((item) => item.isPrimary)?.url ||
+      product.images?.[0]?.url ||
+      "/placeholder-product.jpg";
 
   const prices = (product.variants || [])
     .map((variant) => Number(variant.price))
@@ -20,16 +34,23 @@ const ProductCard = ({ product }) => {
     .map((variant) => Number(variant.compareAtPrice))
     .filter(Number.isFinite);
 
-  const price = prices.length ? Math.min(...prices) : null;
+  const price = isAffiliateProduct
+    ? product.displayPrice == null
+      ? null
+      : Number(product.displayPrice)
+    : prices.length
+      ? Math.min(...prices)
+      : null;
   const comparePrice = comparePrices.length
     ? Math.max(...comparePrices)
     : null;
 
-  const availableVariant = (product.variants || []).find(
-    (variant) => variant.inStock
-  );
+  const availableVariant = isAffiliateProduct
+    ? null
+    : (product.variants || []).find((variant) => variant.inStock);
 
   const hasDiscount =
+    !isAffiliateProduct &&
     price !== null &&
     comparePrice !== null &&
     comparePrice > price;
@@ -50,8 +71,8 @@ const ProductCard = ({ product }) => {
 
   return (
     <article className="group block min-w-0 overflow-hidden rounded-xl bg-[#f7f7f7]">
-      <Link
-        to={`/products/${product.slug}`}
+      <ProductLink
+        {...productLinkProps}
         className="block"
       >
         <div className="relative flex h-[210px] items-center justify-center overflow-hidden p-5">
@@ -94,21 +115,37 @@ const ProductCard = ({ product }) => {
           </div>
 
           <p className="mt-1 text-[10px] text-black/40">
-            {availableVariant ? "In stock" : "Out of stock"}
+            {isAffiliateProduct
+              ? `Sold by ${product.marketplace?.name || "external retailer"}`
+              : availableVariant
+                ? "In stock"
+                : "Out of stock"}
           </p>
         </div>
-      </Link>
+      </ProductLink>
 
       <div className="px-4 pb-4 pt-2">
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={!availableVariant}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/35"
-        >
-          <ShoppingBag size={13} strokeWidth={1.8} />
-          {added ? "Added to cart" : availableVariant ? "Add to cart" : "Out of stock"}
-        </button>
+        {isAffiliateProduct ? (
+          <a
+            href={affiliateRedirectUrl}
+            target="_blank"
+            rel="noopener"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800"
+          >
+            View at {product.marketplace?.name || "retailer"}
+            <ArrowUpRight size={13} />
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={!availableVariant}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/35"
+          >
+            <ShoppingBag size={13} strokeWidth={1.8} />
+            {added ? "Added to cart" : availableVariant ? "Add to cart" : "Out of stock"}
+          </button>
+        )}
       </div>
     </article>
   );
