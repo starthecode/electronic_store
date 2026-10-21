@@ -481,8 +481,11 @@ export const getStoreProducts = async ({
 
 export const getStoreProductBySlug = async (
     slug: string,
+    type?: "affiliate",
 ) => {
-    const product = await prisma.product.findFirst({
+    const product = type === "affiliate"
+        ? null
+        : await prisma.product.findFirst({
         where: {
             slug,
             status: "ACTIVE",
@@ -556,13 +559,108 @@ export const getStoreProductBySlug = async (
         },
     });
 
-    if (!product) {
+    if (product) {
+        return {
+            ...product,
+            type: "regular" as const,
+            variants: product.variants.map(toPublicVariant),
+        };
+    }
+
+    const affiliateProduct =
+        await prisma.affiliateProduct.findFirst({
+            where: {
+                slug,
+                status: "ACTIVE",
+                marketplace: {
+                    status: "ACTIVE",
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                shortDescription: true,
+                description: true,
+                imageUrl: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                    },
+                },
+                brand: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        logoUrl: true,
+                    },
+                },
+                marketplace: {
+                    select: {
+                        id: true,
+                        name: true,
+                        code: true,
+                        logoUrl: true,
+                    },
+                },
+                externalProductId: true,
+                displayPrice: true,
+            },
+        });
+
+    if (!affiliateProduct) {
         throw new AppError("Product not found", 404);
     }
 
-    return {
-        ...product,
+    const specifications = [
+        affiliateProduct.brand?.name
+            ? {
+                id: `${affiliateProduct.id}-brand`,
+                specification: { name: "Brand" },
+                value: affiliateProduct.brand.name,
+            }
+            : null,
+        affiliateProduct.category?.name
+            ? {
+                id: `${affiliateProduct.id}-category`,
+                specification: { name: "Category" },
+                value: affiliateProduct.category.name,
+            }
+            : null,
+        affiliateProduct.marketplace?.name
+            ? {
+                id: `${affiliateProduct.id}-marketplace`,
+                specification: { name: "Marketplace" },
+                value: affiliateProduct.marketplace.name,
+            }
+            : null,
+        affiliateProduct.externalProductId
+            ? {
+                id: `${affiliateProduct.id}-external-id`,
+                specification: { name: "Marketplace product ID" },
+                value: affiliateProduct.externalProductId,
+            }
+            : null,
+    ].filter((item) => item !== null);
 
-        variants: product.variants.map(toPublicVariant),
+    return {
+        ...affiliateProduct,
+        type: "affiliate" as const,
+        images: affiliateProduct.imageUrl
+            ? [
+                {
+                    id: `${affiliateProduct.id}-image`,
+                    url: affiliateProduct.imageUrl,
+                    altText: affiliateProduct.name,
+                    sortOrder: 0,
+                    isPrimary: true,
+                },
+            ]
+            : [],
+        variants: [],
+        specifications,
     };
 };

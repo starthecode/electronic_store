@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 import ProductGallery from "../components/product/ProductGallery";
@@ -15,6 +15,8 @@ import {
 const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const productType = searchParams.get("type");
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -96,7 +98,7 @@ const ProductDetails = () => {
         setLoading(true);
         setError("");
 
-        const response = await getStoreProduct(slug);
+        const response = await getStoreProduct(slug, productType);
 
         const currentProduct = response?.data;
 
@@ -126,7 +128,7 @@ const ProductDetails = () => {
     };
 
     if (slug) loadProduct();
-  }, [slug, loadRelatedProducts]);
+  }, [slug, productType, loadRelatedProducts]);
 
   /* ---------------------------------------------
    * Cart Actions (Redux later)
@@ -228,9 +230,13 @@ const ProductDetails = () => {
 
         {/* Product Section */}
         <section className="grid items-start gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-          <ProductGallery product={product} />
+          <ProductGallery
+            key={`${product.type || "regular"}-${product.id}`}
+            product={product}
+          />
 
           <ProductInfo
+            key={`${product.type || "regular"}-${product.id}`}
             product={product}
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
@@ -238,7 +244,10 @@ const ProductDetails = () => {
         </section>
 
         {/* Tabs */}
-        <ProductTabs product={product} />
+        <ProductTabs
+          key={`${product.type || "regular"}-${product.id}`}
+          product={product}
+        />
 
         {/* Related Products */}
         <section className="mt-24">

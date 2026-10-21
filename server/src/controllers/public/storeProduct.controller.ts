@@ -42,7 +42,10 @@ export const getStoreProduct = asyncHandler(
     }
 
     const product =
-      await getStoreProductBySlug(slug);
+      await getStoreProductBySlug(
+        slug,
+        req.query.type === "affiliate" ? "affiliate" : undefined,
+      );
 
     return successResponse(
       res,

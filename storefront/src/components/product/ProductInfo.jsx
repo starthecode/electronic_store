@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
     Heart,
     Minus,
@@ -6,13 +6,16 @@ import {
     ShoppingBag,
     Star,
 } from "lucide-react";
+import { getAffiliateRedirectUrl } from "../../services/storeProduct.service";
+
+const EMPTY_VARIANTS = [];
 
 const ProductInfo = ({
     product,
     onAddToCart,
     onBuyNow,
 }) => {
-    const variants = product?.variants || [];
+    const variants = product?.variants || EMPTY_VARIANTS;
 
     const [selectedVariantId, setSelectedVariantId] = useState(
         variants[0]?.id || ""
@@ -28,12 +31,6 @@ const ProductInfo = ({
             ) || variants[0],
         [variants, selectedVariantId]
     );
-
-    useEffect(() => {
-        if (variants[0]?.id) {
-            setSelectedVariantId(variants[0].id);
-        }
-    }, [product?.id]);
 
     const attributeGroups = useMemo(() => {
         const groups = new Map();
@@ -97,6 +94,65 @@ const ProductInfo = ({
 
         return matchingVariant;
     };
+
+    if (product.type === "affiliate") {
+        return (
+            <div>
+                {product.brand?.name && (
+                    <p className="mb-3 text-xs font-medium uppercase tracking-[0.15em] text-gray-500">
+                        {product.brand.name}
+                    </p>
+                )}
+
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                    {product.name}
+                </h1>
+
+                {product.displayPrice != null && (
+                    <p className="mt-7 text-3xl font-semibold text-[#ff8a00]">
+                        ₹{Number(product.displayPrice).toLocaleString("en-IN")}
+                    </p>
+                )}
+
+                {(product.shortDescription || product.description) && (
+                    <p className="mt-5 text-sm leading-6 text-gray-500">
+                        {product.shortDescription || product.description}
+                    </p>
+                )}
+
+                <a
+                    href={getAffiliateRedirectUrl(product.id)}
+                    target="_blank"
+                    rel="noopener"
+                    className="mt-8 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ff8a00] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ed7d00] sm:w-fit sm:min-w-56"
+                >
+                    View at {product.marketplace?.name || "Amazon"}
+                </a>
+
+                <p className="mt-4 max-w-xl text-xs leading-5 text-gray-500">
+                    This is an affiliate link. MagDeal may earn a commission
+                    from qualifying purchases at no additional cost to you.
+                    Price and availability are set by the retailer and may
+                    change.
+                </p>
+
+                <div className="mt-6 space-y-2 border-t border-gray-200 pt-5 text-sm text-gray-500">
+                    {product.marketplace?.name && (
+                        <p>
+                            <span className="text-gray-700">Sold by:</span>{" "}
+                            {product.marketplace.name}
+                        </p>
+                    )}
+                    {product.category?.name && (
+                        <p>
+                            <span className="text-gray-700">Category:</span>{" "}
+                            {product.category.name}
+                        </p>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     const handleAttributeSelect = (
         attributeId,

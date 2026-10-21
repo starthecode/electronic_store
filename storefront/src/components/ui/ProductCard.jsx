@@ -2,23 +2,14 @@ import { useState } from "react";
 import { ArrowUpRight, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { getAffiliateRedirectUrl } from "../../services/storeProduct.service";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
   const isAffiliateProduct = product.type === "affiliate";
-  const affiliateRedirectUrl = isAffiliateProduct
-    ? getAffiliateRedirectUrl(product.id)
-    : null;
-  const ProductLink = isAffiliateProduct ? "a" : Link;
-  const productLinkProps = isAffiliateProduct
-    ? {
-        href: affiliateRedirectUrl,
-        target: "_blank",
-        rel: "noopener",
-      }
-    : { to: `/products/${product.slug}` };
+  const productDetailsUrl = isAffiliateProduct
+    ? `/products/${product.slug}?type=affiliate`
+    : `/products/${product.slug}`;
 
   const image = isAffiliateProduct
     ? product.imageUrl || "/placeholder-product.jpg"
@@ -71,8 +62,8 @@ const ProductCard = ({ product }) => {
 
   return (
     <article className="group block min-w-0 overflow-hidden rounded-xl bg-[#f7f7f7]">
-      <ProductLink
-        {...productLinkProps}
+      <Link
+        to={productDetailsUrl}
         className="block"
       >
         <div className="relative flex h-[210px] items-center justify-center overflow-hidden p-5">
@@ -116,25 +107,23 @@ const ProductCard = ({ product }) => {
 
           <p className="mt-1 text-[10px] text-black/40">
             {isAffiliateProduct
-              ? `Sold by ${product.marketplace?.name || "external retailer"}`
+              ? "Affiliate link • MagDeal may earn a commission"
               : availableVariant
                 ? "In stock"
                 : "Out of stock"}
           </p>
         </div>
-      </ProductLink>
+      </Link>
 
       <div className="px-4 pb-4 pt-2">
         {isAffiliateProduct ? (
-          <a
-            href={affiliateRedirectUrl}
-            target="_blank"
-            rel="noopener"
+          <Link
+            to={productDetailsUrl}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800"
           >
-            View at {product.marketplace?.name || "retailer"}
+            View Product
             <ArrowUpRight size={13} />
-          </a>
+          </Link>
         ) : (
           <button
             type="button"

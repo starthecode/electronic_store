@@ -127,6 +127,7 @@ app.use("/api/store/account", publicCustomerRoutes);
 
 app.use("/api/health", healthRoutes);
 
+app.use("/api/affiliate", affiliateClickRoutes);
 
 // Protected APIs
 app.use("/api/auth", authRoutes);
@@ -158,7 +159,6 @@ app.use("/api/audit-logs", auditLogRoutes);
 app.use("/api/affiliate-marketplaces", affiliateMarketplaceRoutes);
 app.use("/api/affiliate-products", affiliateProductRoutes);
 app.use("/api/settings", settingRoutes);
-app.use("/api/affiliate", affiliateClickRoutes);
 app.use("/api/reports/affiliate", affiliateReportRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 

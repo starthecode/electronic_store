@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Star } from "lucide-react";
 
 const reviews = [
@@ -35,10 +35,14 @@ const ProductTabs = ({ product }) => {
             id: "information",
             label: "Additional Information",
         },
-        {
-            id: "reviews",
-            label: `Reviews (${reviews.length})`,
-        },
+        ...(product.type === "affiliate"
+            ? []
+            : [
+                  {
+                      id: "reviews",
+                      label: `Reviews (${reviews.length})`,
+                  },
+              ]),
     ];
 
     return (
@@ -77,6 +81,10 @@ const ProductTabs = ({ product }) => {
                     <div className="mt-5 max-w-4xl text-sm leading-7 text-gray-500">
                         {product.description ? (
                             <p>{product.description}</p>
+                        ) : product.type === "affiliate" ? (
+                            <p>
+                                No additional product description is available.
+                            </p>
                         ) : (
                             <p>
                                 Explore this product with
@@ -90,20 +98,22 @@ const ProductTabs = ({ product }) => {
                         )}
                     </div>
 
-                    <ul className="mt-6 list-disc space-y-2 pl-5 text-sm text-gray-500">
-                        <li>
-                            Premium build quality and
-                            modern design.
-                        </li>
-                        <li>
-                            Designed for reliable everyday
-                            performance.
-                        </li>
-                        <li>
-                            Backed by trusted electronics
-                            components.
-                        </li>
-                    </ul>
+                    {product.type !== "affiliate" && (
+                        <ul className="mt-6 list-disc space-y-2 pl-5 text-sm text-gray-500">
+                            <li>
+                                Premium build quality and
+                                modern design.
+                            </li>
+                            <li>
+                                Designed for reliable everyday
+                                performance.
+                            </li>
+                            <li>
+                                Backed by trusted electronics
+                                components.
+                            </li>
+                        </ul>
+                    )}
                 </div>
             )}
 
@@ -149,7 +159,7 @@ const ProductTabs = ({ product }) => {
             )}
 
             {/* Reviews */}
-            {activeTab === "reviews" && (
+            {product.type !== "affiliate" && activeTab === "reviews" && (
                 <div className="pt-8">
                     <div className="flex items-center justify-between">
                         <div>

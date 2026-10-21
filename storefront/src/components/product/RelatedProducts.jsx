@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const RelatedProducts = ({ products = [] }) => {
@@ -15,27 +14,34 @@ const RelatedProducts = ({ products = [] }) => {
             <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {products.slice(0, 4).map((product) => {
                     const image =
-                        product.images?.find(
-                            (item) => item.isPrimary
-                        )?.url ||
-                        product.images?.[0]?.url;
+                        product.type === "affiliate"
+                            ? product.imageUrl
+                            : product.images?.find(
+                                  (item) => item.isPrimary
+                              )?.url ||
+                              product.images?.[0]?.url;
 
                     const price =
-                        product.variants?.length
-                            ? Math.min(
-                                  ...product.variants.map(
-                                      (variant) =>
-                                          Number(
-                                              variant.price
-                                          )
-                                  )
-                              )
-                            : null;
+                        product.type === "affiliate"
+                            ? product.displayPrice == null
+                                ? null
+                                : Number(product.displayPrice)
+                            : product.variants?.length
+                              ? Math.min(
+                                    ...product.variants.map((variant) =>
+                                        Number(variant.price)
+                                    )
+                                )
+                              : null;
 
                     return (
                         <Link
-                            key={product.id}
-                            to={`/products/${product.slug}`}
+                            key={`${product.type || "regular"}-${product.id}`}
+                            to={
+                                product.type === "affiliate"
+                                    ? `/products/${product.slug}?type=affiliate`
+                                    : `/products/${product.slug}`
+                            }
                             className="group"
                         >
                             <div className="aspect-square overflow-hidden rounded-xl bg-[#f7f7f7]">
@@ -52,6 +58,13 @@ const RelatedProducts = ({ products = [] }) => {
                             <h3 className="mt-4 text-center text-sm font-medium">
                                 {product.name}
                             </h3>
+
+                            {product.type === "affiliate" && (
+                                <p className="mt-1 text-center text-[10px] text-gray-500">
+                                    Affiliate link • MagDeal may earn a
+                                    commission
+                                </p>
+                            )}
 
                             {price !== null && (
                                 <p className="mt-2 text-center text-sm font-medium text-[#ff8a00]">

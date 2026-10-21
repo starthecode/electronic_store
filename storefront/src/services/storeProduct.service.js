@@ -20,9 +20,10 @@ export const getStoreProducts = async (params = {}) => {
   return response.data;
 };
 
-export const getStoreProduct = async (slug) => {
+export const getStoreProduct = async (slug, type) => {
   const response = await api.get(
-    `/store/products/${encodeURIComponent(slug)}`
+    `/store/products/${encodeURIComponent(slug)}`,
+    type === "affiliate" ? { params: { type } } : undefined
   );
 
   return response.data;
