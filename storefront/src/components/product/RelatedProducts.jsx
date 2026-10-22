@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import StoreImage from "./StoreImage";
 
 const RelatedProducts = ({ products = [] }) => {
     if (!products.length) return null;
@@ -15,7 +16,7 @@ const RelatedProducts = ({ products = [] }) => {
                 {products.slice(0, 4).map((product) => {
                     const image =
                         product.type === "affiliate"
-                            ? product.imageUrl
+                            ? product.imageUrls?.[0] || product.imageUrl
                             : product.images?.find(
                                   (item) => item.isPrimary
                               )?.url ||
@@ -45,14 +46,11 @@ const RelatedProducts = ({ products = [] }) => {
                             className="group"
                         >
                             <div className="aspect-square overflow-hidden rounded-xl bg-[#f7f7f7]">
-                                {image && (
-                                    <img
-                                        src={image}
-                                        alt={product.name}
-                                        loading="lazy"
-                                        className="h-full w-full object-contain p-6 transition duration-500 group-hover:scale-105"
-                                    />
-                                )}
+                                <StoreImage
+                                    src={image}
+                                    alt={product.name}
+                                    className="h-full w-full object-contain p-6 transition duration-500 group-hover:scale-105"
+                                />
                             </div>
 
                             <h3 className="mt-4 text-center text-sm font-medium">

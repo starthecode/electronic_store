@@ -471,6 +471,7 @@ model AffiliateProduct {
   description       String?
 
   imageUrl          String?
+  imageUrls         String[] @default([])
 
   categoryId        String?  @db.Uuid
   brandId           String?  @db.Uuid

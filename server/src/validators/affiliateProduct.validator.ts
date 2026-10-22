@@ -7,6 +7,14 @@ const statusSchema = z.enum([
   "INACTIVE",
 ]);
 
+const imageUrlSchema = z
+  .string()
+  .url()
+  .refine((value) => {
+    const protocol = new URL(value).protocol;
+    return protocol === "http:" || protocol === "https:";
+  }, "Image URLs must use HTTP or HTTPS");
+
 export const affiliateProductListSchema = z.object({
   query: z.object({
     page: z.string().optional(),
@@ -56,7 +64,8 @@ export const createAffiliateProductSchema = z.object({
 
     description: z.string().optional(),
 
-    imageUrl: z.string().url().optional(),
+    imageUrl: imageUrlSchema.optional(),
+    imageUrls: z.array(imageUrlSchema).max(20).optional(),
 
     categoryId: uuidSchema.optional(),
     brandId: uuidSchema.optional(),
@@ -111,7 +120,8 @@ export const updateAffiliateProductSchema = z.object({
 
       description: z.string().nullable().optional(),
 
-      imageUrl: z.string().url().nullable().optional(),
+      imageUrl: imageUrlSchema.nullable().optional(),
+      imageUrls: z.array(imageUrlSchema).max(20).optional(),
 
       categoryId: uuidSchema.nullable().optional(),
       brandId: uuidSchema.nullable().optional(),

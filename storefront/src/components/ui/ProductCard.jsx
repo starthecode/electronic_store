@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowUpRight, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import StoreImage from "../product/StoreImage";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -12,7 +13,7 @@ const ProductCard = ({ product }) => {
     : `/products/${product.slug}`;
 
   const image = isAffiliateProduct
-    ? product.imageUrl || "/placeholder-product.jpg"
+    ? product.imageUrls?.[0] || product.imageUrl
     : product.images?.find((item) => item.isPrimary)?.url ||
       product.images?.[0]?.url ||
       "/placeholder-product.jpg";
@@ -67,11 +68,9 @@ const ProductCard = ({ product }) => {
         className="block"
       >
         <div className="relative flex h-[210px] items-center justify-center overflow-hidden p-5">
-          <img
+          <StoreImage
             src={image}
             alt={product.name}
-            loading="lazy"
-            decoding="async"
             className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
           />
 

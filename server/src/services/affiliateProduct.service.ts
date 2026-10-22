@@ -1,5 +1,6 @@
 import { prisma } from "../config/database.js";
 import { AppError } from "../utils/AppError.js";
+import { parseAffiliateImageUrls } from "../utils/affiliateImageUrls.js";
 import { createAuditLog } from "./auditLog.service.js";
 
 const affiliateProductSelect = {
@@ -9,6 +10,7 @@ const affiliateProductSelect = {
   shortDescription: true,
   description: true,
   imageUrl: true,
+  imageUrls: true,
   categoryId: true,
   brandId: true,
   marketplaceId: true,
@@ -47,6 +49,23 @@ const affiliateProductSelect = {
     },
   },
 } as const;
+
+const withAffiliateImages = <
+  T extends { imageUrl: string | null; imageUrls: string[] }
+>(
+  product: T
+) => {
+  const imageUrls = parseAffiliateImageUrls(
+    product.imageUrls,
+    product.imageUrl
+  );
+
+  return {
+    ...product,
+    imageUrls,
+    imageUrl: imageUrls[0] ?? null,
+  };
+};
 
 export interface AffiliateProductListParams {
   page?: number;
@@ -206,7 +225,7 @@ export const getAffiliateProducts = async ({
   ]);
 
   return {
-    products,
+    products: products.map(withAffiliateImages),
     pagination: {
       page,
       limit,
@@ -234,7 +253,7 @@ export const getAffiliateProductById = async (
     );
   }
 
-  return product;
+  return withAffiliateImages(product);
 };
 
 export const createAffiliateProduct = async (
@@ -244,6 +263,7 @@ export const createAffiliateProduct = async (
     shortDescription?: string;
     description?: string;
     imageUrl?: string;
+    imageUrls?: string[];
     categoryId?: string;
     brandId?: string;
     marketplaceId: string;
@@ -258,6 +278,10 @@ export const createAffiliateProduct = async (
   await ensureMarketplace(data.marketplaceId);
   await ensureCategory(data.categoryId);
   await ensureBrand(data.brandId);
+  const imageUrls = parseAffiliateImageUrls(
+    data.imageUrls,
+    data.imageUrl
+  );
 
   const slug = data.slug.trim().toLowerCase();
 
@@ -282,7 +306,8 @@ export const createAffiliateProduct = async (
         slug,
         shortDescription: data.shortDescription,
         description: data.description,
-        imageUrl: data.imageUrl,
+        imageUrl: imageUrls[0] ?? null,
+        imageUrls,
         categoryId: data.categoryId,
         brandId: data.brandId,
         marketplaceId: data.marketplaceId,
@@ -311,7 +336,7 @@ export const createAffiliateProduct = async (
     },
   });
 
-  return product;
+  return withAffiliateImages(product);
 };
 
 export const updateAffiliateProduct = async (
@@ -322,6 +347,7 @@ export const updateAffiliateProduct = async (
     shortDescription?: string | null;
     description?: string | null;
     imageUrl?: string | null;
+    imageUrls?: string[];
     categoryId?: string | null;
     brandId?: string;
     marketplaceId?: string;
@@ -367,6 +393,7 @@ export const updateAffiliateProduct = async (
     shortDescription?: string | null;
     description?: string | null;
     imageUrl?: string | null;
+    imageUrls?: string[];
     categoryId?: string | null;
     brandId?: string | null;
     marketplaceId?: string;
@@ -411,8 +438,15 @@ export const updateAffiliateProduct = async (
     updateData.description = data.description;
   }
 
-  if (data.imageUrl !== undefined) {
-    updateData.imageUrl = data.imageUrl;
+  if (data.imageUrls !== undefined) {
+    updateData.imageUrls = data.imageUrls.map((url) => url.trim());
+    updateData.imageUrl = updateData.imageUrls[0] ?? null;
+  } else if (data.imageUrl !== undefined) {
+    updateData.imageUrls = parseAffiliateImageUrls(
+      undefined,
+      data.imageUrl
+    );
+    updateData.imageUrl = updateData.imageUrls[0] ?? null;
   }
 
   if (data.categoryId !== undefined) {
@@ -464,7 +498,7 @@ export const updateAffiliateProduct = async (
     },
   });
 
-  return product;
+  return withAffiliateImages(product);
 };
 
 export const updateAffiliateProductStatus =
@@ -519,7 +553,7 @@ export const updateAffiliateProductStatus =
       },
     });
 
-    return product;
+    return withAffiliateImages(product);
   };
 
 export const deleteAffiliateProduct = async (

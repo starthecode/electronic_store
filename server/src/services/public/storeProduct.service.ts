@@ -1,6 +1,7 @@
 import { prisma } from "../../config/database.js";
 import { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../utils/AppError.js";
+import { parseAffiliateImageUrls } from "../../utils/affiliateImageUrls.js";
 
 interface StoreProductListInput {
     page: number;
@@ -252,6 +253,7 @@ export const getStoreProducts = async ({
         shortDescription: true,
         description: true,
         imageUrl: true,
+        imageUrls: true,
         displayPrice: true,
         createdAt: true,
         category: {
@@ -447,6 +449,10 @@ export const getStoreProducts = async ({
 
             return {
                 ...product,
+                imageUrls: parseAffiliateImageUrls(
+                    product.imageUrls,
+                    product.imageUrl
+                ),
                 type: "affiliate" as const,
             };
         }
@@ -583,6 +589,7 @@ export const getStoreProductBySlug = async (
                 shortDescription: true,
                 description: true,
                 imageUrl: true,
+                imageUrls: true,
                 category: {
                     select: {
                         id: true,
@@ -614,6 +621,11 @@ export const getStoreProductBySlug = async (
     if (!affiliateProduct) {
         throw new AppError("Product not found", 404);
     }
+
+    const imageUrls = parseAffiliateImageUrls(
+        affiliateProduct.imageUrls,
+        affiliateProduct.imageUrl
+    );
 
     const specifications = [
         affiliateProduct.brand?.name
@@ -649,17 +661,15 @@ export const getStoreProductBySlug = async (
     return {
         ...affiliateProduct,
         type: "affiliate" as const,
-        images: affiliateProduct.imageUrl
-            ? [
-                {
-                    id: `${affiliateProduct.id}-image`,
-                    url: affiliateProduct.imageUrl,
-                    altText: affiliateProduct.name,
-                    sortOrder: 0,
-                    isPrimary: true,
-                },
-            ]
-            : [],
+        imageUrls,
+        imageUrl: imageUrls[0] ?? null,
+        images: imageUrls.map((url, index) => ({
+            id: `${affiliateProduct.id}-image-${index}`,
+            url,
+            altText: affiliateProduct.name,
+            sortOrder: index,
+            isPrimary: index === 0,
+        })),
         variants: [],
         specifications,
     };
