@@ -1,5 +1,7 @@
 
 
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="mx-auto max-w-[1200px] px-5 pb-8 pt-14 lg:px-8">
@@ -79,13 +81,23 @@ const FooterColumn = ({ title, links }) => (
 
     <div className="mt-4 space-y-2">
       {links.map((link) => (
-        <a
-          key={link}
-          href="/"
-          className="block text-[9px] text-gray-500 hover:text-black"
-        >
-          {link}
-        </a>
+        link === "Privacy Policy" ? (
+          <Link
+            key={link}
+            to="/privacy"
+            className="block text-[9px] text-gray-500 hover:text-black"
+          >
+            {link}
+          </Link>
+        ) : (
+          <a
+            key={link}
+            href="/"
+            className="block text-[9px] text-gray-500 hover:text-black"
+          >
+            {link}
+          </a>
+        )
       ))}
     </div>
   </div>

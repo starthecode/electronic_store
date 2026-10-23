@@ -510,6 +510,16 @@ model AffiliateClick {
   ipHash            String?
   userAgent         String?
   referrer          String?
+  visitorHash       String?  @db.VarChar(64)
+  countryCode       String?  @db.VarChar(2)
+  region            String?  @db.VarChar(100)
+  city              String?  @db.VarChar(100)
+  referrerHost      String?  @db.VarChar(253)
+  utmSource         String?  @db.VarChar(200)
+  utmMedium         String?  @db.VarChar(200)
+  utmCampaign       String?  @db.VarChar(200)
+  utmContent        String?  @db.VarChar(200)
+  landingPath       String?  @db.VarChar(500)
   clickedAt         DateTime @default(now())
 
   affiliateProduct AffiliateProduct @relation(fields: [affiliateProductId],references: [id],onDelete: Cascade)
@@ -519,6 +529,10 @@ model AffiliateClick {
   @@index([affiliateProductId])
   @@index([marketplaceId])
   @@index([clickedAt])
+  @@index([visitorHash, clickedAt])
+  @@index([countryCode, clickedAt])
+  @@index([referrerHost, clickedAt])
+  @@index([utmCampaign, clickedAt])
 }
 
 

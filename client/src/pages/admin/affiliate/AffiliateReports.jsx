@@ -3,20 +3,31 @@ import { RefreshCw, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   getAffiliateOverview, getAffiliateProductReport, getAffiliateMarketplaceReport,
   getAffiliateTrends, getAffiliateMarketplaces, getCategoriesForAffiliate, getBrandsForAffiliate,
+  getAffiliateBreakdowns,
 } from "../../../services/affiliate.service";
 import AffiliateStats from "../../../components/affiliate/AffiliateStats";
 import AffiliateTrendChart from "../../../components/affiliate/AffiliateTrendChart";
 import AffiliateMarketplaceBadge from "../../../components/affiliate/AffiliateMarketplaceBadge";
+import AffiliateAttributionTables from "../../../components/affiliate/AffiliateAttributionTables";
 
-const today = new Date().toISOString().slice(0, 10);
-const start = new Date();
-start.setDate(1);
-const firstDay = start.toISOString().slice(0, 10);
+const kolkataDateParts = new Intl.DateTimeFormat("en", {
+  timeZone: "Asia/Kolkata",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).formatToParts(new Date()).reduce((parts, item) => {
+  parts[item.type] = item.value;
+  return parts;
+}, {});
+const kolkataToday = `${kolkataDateParts.year}-${kolkataDateParts.month}-${kolkataDateParts.day}`;
+const today = kolkataToday;
+const firstDay = `${kolkataToday.slice(0, 7)}-01`;
 
 export default function AffiliateReports() {
   const [from, setFrom] = useState(firstDay), [to, setTo] = useState(today);
   const [overview, setOverview] = useState(null), [trends, setTrends] = useState([]);
   const [marketplaceReport, setMarketplaceReport] = useState([]);
+  const [breakdowns, setBreakdowns] = useState(null);
   const [productReport, setProductReport] = useState(null);
   const [marketplaces, setMarketplaces] = useState([]), [categories, setCategories] = useState([]), [brands, setBrands] = useState([]);
   const [search, setSearch] = useState(""), [marketplaceId, setMarketplaceId] = useState("");
@@ -28,10 +39,12 @@ export default function AffiliateReports() {
   const loadSummary = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const [o, t, m] = await Promise.all([
+      const [o, t, m, b] = await Promise.all([
         getAffiliateOverview(baseParams), getAffiliateTrends(baseParams), getAffiliateMarketplaceReport(baseParams),
+        getAffiliateBreakdowns(baseParams),
       ]);
       setOverview(o); setTrends(t?.trends ?? []); setMarketplaceReport(m?.marketplaces ?? []);
+      setBreakdowns(b);
     } catch (err) {
       setError(err?.response?.data?.message || "Unable to load affiliate reports.");
     } finally { setLoading(false); }
@@ -75,19 +88,26 @@ export default function AffiliateReports() {
           <label className="text-sm font-medium text-gray-700">From<input type="date" value={from} onChange={(e) => setFrom(e.target.value)} max={to || undefined} className="mt-2 h-10 w-full rounded-xl border border-gray-200 px-3 outline-none focus:border-orange-400"/></label>
           <label className="text-sm font-medium text-gray-700">To<input type="date" value={to} onChange={(e) => setTo(e.target.value)} min={from || undefined} max={today} className="mt-2 h-10 w-full rounded-xl border border-gray-200 px-3 outline-none focus:border-orange-400"/></label>
         </div>
+        <p className="mt-3 text-xs text-gray-500">Dates and daily trends use Asia/Kolkata time. Unique visitors are distinct consented browser identifiers over the selected range (and per day in the trend), not people; cookie identifiers expire after 30 days. Historical IP-hash estimates are shown separately.</p>
       </div>
 
       {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
       <AffiliateStats data={overview} loading={loading}/>
+      {overview?.legacyUniqueClicks > 0 && (
+        <p className="text-xs text-gray-500">
+          Legacy estimate: {Number(overview.legacyUniqueClicks).toLocaleString("en-IN")} distinct IP hashes on older records. This is not included in unique visitors and may not represent distinct browsers.
+        </p>
+      )}
       <AffiliateTrendChart trends={trends} loading={loading}/>
+      <AffiliateAttributionTables data={breakdowns} loading={loading}/>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-100 p-5"><h2 className="font-semibold text-gray-900">Marketplace Performance</h2><p className="mt-1 text-sm text-gray-500">Click activity grouped by affiliate marketplace.</p></div>
         <div className="overflow-x-auto"><table className="min-w-full text-sm">
-          <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500"><tr><th className="px-5 py-3">Marketplace</th><th className="px-5 py-3">Code</th><th className="px-5 py-3">Products</th><th className="px-5 py-3">Clicks</th><th className="px-5 py-3">Status</th></tr></thead>
+          <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500"><tr><th className="px-5 py-3">Marketplace</th><th className="px-5 py-3">Code</th><th className="px-5 py-3">Products</th><th className="px-5 py-3">Outbound clicks</th><th className="px-5 py-3">Unique visitors</th><th className="px-5 py-3">Status</th></tr></thead>
           <tbody className="divide-y divide-gray-100">
-            {marketplaceReport.map((x) => <tr key={x.id} className="hover:bg-gray-50"><td className="px-5 py-4 font-medium">{x.name}</td><td className="px-5 py-4 font-mono text-xs text-gray-500">{x.code}</td><td className="px-5 py-4">{Number(x.productCount).toLocaleString("en-IN")}</td><td className="px-5 py-4 font-semibold">{Number(x.clickCount).toLocaleString("en-IN")}</td><td className="px-5 py-4"><AffiliateMarketplaceBadge status={x.status}/></td></tr>)}
-            {!marketplaceReport.length && !loading && <tr><td colSpan="5" className="px-5 py-10 text-center text-gray-500">No marketplace activity found.</td></tr>}
+            {marketplaceReport.map((x) => <tr key={x.id} className="hover:bg-gray-50"><td className="px-5 py-4 font-medium">{x.name}</td><td className="px-5 py-4 font-mono text-xs text-gray-500">{x.code}</td><td className="px-5 py-4">{Number(x.productCount).toLocaleString("en-IN")}</td><td className="px-5 py-4 font-semibold">{Number(x.clickCount).toLocaleString("en-IN")}</td><td className="px-5 py-4">{Number(x.uniqueVisitors).toLocaleString("en-IN")}</td><td className="px-5 py-4"><AffiliateMarketplaceBadge status={x.status}/></td></tr>)}
+            {!marketplaceReport.length && !loading && <tr><td colSpan="6" className="px-5 py-10 text-center text-gray-500">No marketplace activity found.</td></tr>}
           </tbody>
         </table></div>
       </div>
@@ -105,11 +125,11 @@ export default function AffiliateReports() {
 
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="overflow-x-auto"><table className="min-w-full text-sm">
-            <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500"><tr><th className="px-5 py-3">Product</th><th className="px-5 py-3">Marketplace</th><th className="px-5 py-3">Category</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Price</th><th className="px-5 py-3">Clicks</th></tr></thead>
+            <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500"><tr><th className="px-5 py-3">Product</th><th className="px-5 py-3">Marketplace clicked</th><th className="px-5 py-3">Category</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Price</th><th className="px-5 py-3">Outbound clicks</th><th className="px-5 py-3">Unique visitors</th></tr></thead>
             <tbody className="divide-y divide-gray-100">
-              {tableLoading ? <tr><td colSpan="6" className="px-5 py-10 text-center text-gray-500">Loading products...</td></tr> :
-                products.length ? products.map(x => <tr key={x.id} className="hover:bg-gray-50"><td className="px-5 py-4"><div className="font-medium">{x.name}</div><div className="text-xs text-gray-400">{x.slug}</div></td><td className="px-5 py-4">{x.marketplace?.name ?? "—"}</td><td className="px-5 py-4 text-gray-600">{x.category?.name ?? "—"}</td><td className="px-5 py-4 text-gray-600">{x.brand?.name ?? "—"}</td><td className="px-5 py-4">₹{x.displayPrice == null ? "—" : Number(x.displayPrice).toLocaleString("en-IN")}</td><td className="px-5 py-4 font-semibold">{Number(x.clickCount).toLocaleString("en-IN")}</td></tr>) :
-                <tr><td colSpan="6" className="px-5 py-10 text-center text-gray-500">No affiliate products found.</td></tr>}
+              {tableLoading ? <tr><td colSpan="7" className="px-5 py-10 text-center text-gray-500">Loading products...</td></tr> :
+                products.length ? products.map(x => <tr key={x.id} className="hover:bg-gray-50"><td className="px-5 py-4"><div className="font-medium">{x.name}</div><div className="text-xs text-gray-400">{x.slug}</div></td><td className="px-5 py-4">{x.clickedMarketplaces?.length ? x.clickedMarketplaces.join(", ") : x.marketplace?.name ?? "—"}</td><td className="px-5 py-4 text-gray-600">{x.category?.name ?? "—"}</td><td className="px-5 py-4 text-gray-600">{x.brand?.name ?? "—"}</td><td className="px-5 py-4">₹{x.displayPrice == null ? "—" : Number(x.displayPrice).toLocaleString("en-IN")}</td><td className="px-5 py-4 font-semibold">{Number(x.clickCount).toLocaleString("en-IN")}</td><td className="px-5 py-4">{Number(x.uniqueVisitors).toLocaleString("en-IN")}</td></tr>) :
+                <tr><td colSpan="7" className="px-5 py-10 text-center text-gray-500">No affiliate products found.</td></tr>}
             </tbody>
           </table></div>
           {pagination && pagination.totalPages > 1 && <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4"><p className="text-sm text-gray-500">Page {pagination.page} of {pagination.totalPages}</p><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40"><ChevronLeft size={16}/> Previous</button><button disabled={page >= pagination.totalPages} onClick={() => setPage(p => p + 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40">Next <ChevronRight size={16}/></button></div></div>}

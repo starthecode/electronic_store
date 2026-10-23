@@ -1,23 +1,14 @@
 import { prisma } from "../config/database.js";
 import { Prisma } from "../generated/prisma/client.js";
+import {
+  displayReferralSource,
+  getKolkataDateRange,
+} from "../utils/affiliateTracking.js";
 
 const getDateRange = (
   from?: string,
   to?: string
-) => {
-  const start = from
-    ? new Date(`${from}T00:00:00.000Z`)
-    : undefined;
-
-  const end = to
-    ? new Date(`${to}T23:59:59.999Z`)
-    : undefined;
-
-  return {
-    start,
-    end,
-  };
-};
+) => getKolkataDateRange(from, to);
 
 /**
  * Build SQL conditions for affiliate clicks date filtering.
@@ -26,19 +17,19 @@ const getClickDateConditions = (
   from?: string,
   to?: string
 ): Prisma.Sql[] => {
-  const { start, end } = getDateRange(from, to);
+  const { start, endExclusive } = getDateRange(from, to);
 
   const conditions: Prisma.Sql[] = [];
 
   if (start) {
     conditions.push(
-      Prisma.sql`ac."clickedAt" >= ${start}`
+      Prisma.sql`(ac."clickedAt" AT TIME ZONE 'UTC') >= ${start}`
     );
   }
 
-  if (end) {
+  if (endExclusive) {
     conditions.push(
-      Prisma.sql`ac."clickedAt" <= ${end}`
+      Prisma.sql`(ac."clickedAt" AT TIME ZONE 'UTC') < ${endExclusive}`
     );
   }
 
@@ -88,13 +79,28 @@ export const getAffiliateOverview = async ({
     prisma.$queryRaw<
       {
         totalClicks: bigint;
-        uniqueClicks: bigint;
+        uniqueVisitors: bigint;
+        legacyUniqueClicks: bigint;
+        countries: bigint;
+        regions: bigint;
+        referralSources: bigint;
+        campaigns: bigint;
       }[]
     >(
       Prisma.sql`
         SELECT
           COUNT(*)::bigint AS "totalClicks",
-          COUNT(DISTINCT ac."ipHash")::bigint AS "uniqueClicks"
+          COUNT(DISTINCT ac."visitorHash")::bigint
+            AS "uniqueVisitors",
+          COUNT(DISTINCT ac."ipHash") FILTER (
+            WHERE ac."visitorHash" IS NULL
+          )::bigint AS "legacyUniqueClicks",
+          COUNT(DISTINCT ac."countryCode")::bigint AS "countries",
+          COUNT(DISTINCT (ac."countryCode", ac."region")) FILTER (
+            WHERE ac."countryCode" IS NOT NULL OR ac."region" IS NOT NULL
+          )::bigint AS "regions",
+          COUNT(DISTINCT ac."referrerHost")::bigint AS "referralSources",
+          COUNT(DISTINCT ac."utmCampaign")::bigint AS "campaigns"
         FROM "AffiliateClick" ac
         ${clickWhere}
       `
@@ -118,8 +124,28 @@ export const getAffiliateOverview = async ({
       clickStats[0]?.totalClicks ?? 0
     ),
 
-    uniqueClicks: Number(
-      clickStats[0]?.uniqueClicks ?? 0
+    uniqueVisitors: Number(
+      clickStats[0]?.uniqueVisitors ?? 0
+    ),
+
+    legacyUniqueClicks: Number(
+      clickStats[0]?.legacyUniqueClicks ?? 0
+    ),
+
+    countries: Number(
+      clickStats[0]?.countries ?? 0
+    ),
+
+    regions: Number(
+      clickStats[0]?.regions ?? 0
+    ),
+
+    referralSources: Number(
+      clickStats[0]?.referralSources ?? 0
+    ),
+
+    campaigns: Number(
+      clickStats[0]?.campaigns ?? 0
     ),
 
     activeProducts,
@@ -267,6 +293,9 @@ export const getAffiliateProductReport = async ({
       brandName: string | null;
 
       clickCount: bigint;
+      uniqueVisitors: bigint;
+      legacyUniqueClicks: bigint;
+      clickedMarketplaces: string[];
     }[]
   >(
     Prisma.sql`
@@ -287,7 +316,16 @@ export const getAffiliateProductReport = async ({
         b."id" AS "brandId",
         b."name" AS "brandName",
 
-        COUNT(ac."id")::bigint AS "clickCount"
+        COUNT(ac."id")::bigint AS "clickCount",
+        COUNT(DISTINCT ac."visitorHash")::bigint AS "uniqueVisitors",
+        COUNT(DISTINCT ac."ipHash") FILTER (
+          WHERE ac."visitorHash" IS NULL
+        )::bigint AS "legacyUniqueClicks",
+        COALESCE(
+          ARRAY_AGG(DISTINCT clickedMarketplace."name")
+            FILTER (WHERE clickedMarketplace."id" IS NOT NULL),
+          ARRAY[]::TEXT[]
+        ) AS "clickedMarketplaces"
 
       FROM "AffiliateProduct" ap
 
@@ -303,6 +341,9 @@ export const getAffiliateProductReport = async ({
       LEFT JOIN "AffiliateClick" ac
         ON ac."affiliateProductId" = ap."id"
         ${clickWhere}
+
+      LEFT JOIN "AffiliateMarketplace" clickedMarketplace
+        ON clickedMarketplace."id" = ac."marketplaceId"
 
       ${productWhere}
 
@@ -363,6 +404,9 @@ export const getAffiliateProductReport = async ({
       clickCount: Number(
         product.clickCount
       ),
+      uniqueVisitors: Number(product.uniqueVisitors),
+      legacyUniqueClicks: Number(product.legacyUniqueClicks),
+      clickedMarketplaces: product.clickedMarketplaces,
     })
   );
 
@@ -401,15 +445,16 @@ export const getAffiliateMarketplaceReport =
     const clickConditions =
       getClickDateConditions(from, to);
 
-    const clickWhere =
-      clickConditions.length > 0
-        ? Prisma.sql`
-            WHERE ${Prisma.join(
-              clickConditions,
-              " AND "
-            )}
-          `
-        : Prisma.empty;
+    const marketplaceClickConditions = [
+      ...clickConditions,
+      Prisma.sql`ac."marketplaceId" = am."id"`,
+    ];
+    const marketplaceClickWhere = Prisma.sql`
+      WHERE ${Prisma.join(
+        marketplaceClickConditions,
+        " AND "
+      )}
+    `;
 
     const marketplaces = await prisma.$queryRaw<
       {
@@ -419,6 +464,7 @@ export const getAffiliateMarketplaceReport =
         status: string;
         productCount: bigint;
         clickCount: bigint;
+        uniqueVisitors: bigint;
       }[]
     >(
       Prisma.sql`
@@ -437,9 +483,14 @@ export const getAffiliateMarketplaceReport =
           (
             SELECT COUNT(*)::bigint
             FROM "AffiliateClick" ac
-            ${clickWhere}
-            AND ac."marketplaceId" = am."id"
-          ) AS "clickCount"
+            ${marketplaceClickWhere}
+          ) AS "clickCount",
+
+          (
+            SELECT COUNT(DISTINCT ac."visitorHash")::bigint
+            FROM "AffiliateClick" ac
+            ${marketplaceClickWhere}
+          ) AS "uniqueVisitors"
 
         FROM "AffiliateMarketplace" am
 
@@ -447,8 +498,7 @@ export const getAffiliateMarketplaceReport =
           (
             SELECT COUNT(*)::bigint
             FROM "AffiliateClick" ac
-            ${clickWhere}
-            AND ac."marketplaceId" = am."id"
+            ${marketplaceClickWhere}
           ) DESC,
 
           am."name" ASC
@@ -470,11 +520,142 @@ export const getAffiliateMarketplaceReport =
           clickCount: Number(
             marketplace.clickCount
           ),
+          uniqueVisitors: Number(marketplace.uniqueVisitors),
         })),
 
       period: getPeriod(from, to),
     };
   };
+
+export const getAffiliateBreakdownReport = async ({
+  from,
+  to,
+}: {
+  from?: string;
+  to?: string;
+}) => {
+  const clickConditions = getClickDateConditions(from, to);
+  const whereClause =
+    clickConditions.length > 0
+      ? Prisma.sql`WHERE ${Prisma.join(clickConditions, " AND ")}`
+      : Prisma.empty;
+
+  const [locations, referralSources, campaigns, landingPages] =
+    await Promise.all([
+      prisma.$queryRaw<
+        {
+          countryCode: string | null;
+          region: string | null;
+          city: string | null;
+          clickCount: bigint;
+          uniqueVisitors: bigint;
+        }[]
+      >(
+        Prisma.sql`
+          SELECT
+            ac."countryCode",
+            ac."region",
+            ac."city",
+            COUNT(*)::bigint AS "clickCount",
+            COUNT(DISTINCT ac."visitorHash")::bigint AS "uniqueVisitors"
+          FROM "AffiliateClick" ac
+          ${whereClause}
+          GROUP BY ac."countryCode", ac."region", ac."city"
+          ORDER BY COUNT(*) DESC
+          LIMIT 100
+        `
+      ),
+      prisma.$queryRaw<
+        {
+          referrerHost: string | null;
+          clickCount: bigint;
+          uniqueVisitors: bigint;
+        }[]
+      >(
+        Prisma.sql`
+          SELECT
+            ac."referrerHost",
+            COUNT(*)::bigint AS "clickCount",
+            COUNT(DISTINCT ac."visitorHash")::bigint AS "uniqueVisitors"
+          FROM "AffiliateClick" ac
+          ${whereClause}
+          GROUP BY ac."referrerHost"
+          ORDER BY COUNT(*) DESC
+          LIMIT 50
+        `
+      ),
+      prisma.$queryRaw<
+        {
+          utmSource: string | null;
+          utmMedium: string | null;
+          utmCampaign: string | null;
+          clickCount: bigint;
+          uniqueVisitors: bigint;
+        }[]
+      >(
+        Prisma.sql`
+          SELECT
+            ac."utmSource",
+            ac."utmMedium",
+            ac."utmCampaign",
+            COUNT(*)::bigint AS "clickCount",
+            COUNT(DISTINCT ac."visitorHash")::bigint AS "uniqueVisitors"
+          FROM "AffiliateClick" ac
+          ${whereClause}
+          GROUP BY ac."utmSource", ac."utmMedium", ac."utmCampaign"
+          ORDER BY COUNT(*) DESC
+          LIMIT 50
+        `
+      ),
+      prisma.$queryRaw<
+        {
+          landingPath: string | null;
+          clickCount: bigint;
+          uniqueVisitors: bigint;
+        }[]
+      >(
+        Prisma.sql`
+          SELECT
+            ac."landingPath",
+            COUNT(*)::bigint AS "clickCount",
+            COUNT(DISTINCT ac."visitorHash")::bigint AS "uniqueVisitors"
+          FROM "AffiliateClick" ac
+          ${whereClause}
+          GROUP BY ac."landingPath"
+          ORDER BY COUNT(*) DESC
+          LIMIT 50
+        `
+      ),
+    ]);
+
+  return {
+    locations: locations.map((row) => ({
+      countryCode: row.countryCode,
+      region: row.region,
+      city: row.city,
+      clickCount: Number(row.clickCount),
+      uniqueVisitors: Number(row.uniqueVisitors),
+    })),
+    referralSources: referralSources.map((row) => ({
+      hostname: displayReferralSource(row.referrerHost),
+      clickCount: Number(row.clickCount),
+      uniqueVisitors: Number(row.uniqueVisitors),
+    })),
+    campaigns: campaigns.map((row) => ({
+      source: row.utmSource,
+      medium: row.utmMedium,
+      campaign: row.utmCampaign ?? "Unattributed",
+      clickCount: Number(row.clickCount),
+      uniqueVisitors: Number(row.uniqueVisitors),
+    })),
+    landingPages: landingPages.map((row) => ({
+      path: row.landingPath ?? "Unknown landing page",
+      clickCount: Number(row.clickCount),
+      uniqueVisitors: Number(row.uniqueVisitors),
+    })),
+    period: getPeriod(from, to),
+  };
+};
 /**
  * ---------------------------------------------------------
  * AFFILIATE TREND REPORT
@@ -483,7 +664,7 @@ export const getAffiliateMarketplaceReport =
  * PostgreSQL performs:
  * - date grouping
  * - total click count
- * - unique IP count
+ * - consented unique visitor count
  *
  * Node.js no longer loads every click into memory.
  */
@@ -510,25 +691,31 @@ export const getAffiliateTrendReport =
 
     const trends = await prisma.$queryRaw<
       {
-        date: Date;
+        date: string;
         clicks: bigint;
-        uniqueClicks: bigint;
+        uniqueVisitors: bigint;
+        legacyUniqueClicks: bigint;
       }[]
     >(
       Prisma.sql`
         SELECT
-          DATE_TRUNC(
-            'day',
-            ac."clickedAt"
+          TO_CHAR(
+            DATE_TRUNC(
+              'day',
+              (ac."clickedAt" AT TIME ZONE 'UTC')
+                AT TIME ZONE 'Asia/Kolkata'
+            ),
+            'YYYY-MM-DD'
           ) AS "date",
 
           COUNT(*)::bigint
             AS "clicks",
 
-          COUNT(
-            DISTINCT ac."ipHash"
-          )::bigint
-            AS "uniqueClicks"
+          COUNT(DISTINCT ac."visitorHash")::bigint
+            AS "uniqueVisitors",
+          COUNT(DISTINCT ac."ipHash") FILTER (
+            WHERE ac."visitorHash" IS NULL
+          )::bigint AS "legacyUniqueClicks"
 
         FROM "AffiliateClick" ac
 
@@ -537,7 +724,8 @@ export const getAffiliateTrendReport =
         GROUP BY
           DATE_TRUNC(
             'day',
-            ac."clickedAt"
+            (ac."clickedAt" AT TIME ZONE 'UTC')
+              AT TIME ZONE 'Asia/Kolkata'
           )
 
         ORDER BY
@@ -547,17 +735,14 @@ export const getAffiliateTrendReport =
 
     return {
       trends: trends.map((trend) => ({
-        date: trend.date
-          .toISOString()
-          .slice(0, 10),
+        date: trend.date,
 
         clicks: Number(
           trend.clicks
         ),
 
-        uniqueClicks: Number(
-          trend.uniqueClicks
-        ),
+        uniqueVisitors: Number(trend.uniqueVisitors),
+        legacyUniqueClicks: Number(trend.legacyUniqueClicks),
       })),
 
       period: getPeriod(from, to),

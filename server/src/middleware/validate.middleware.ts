@@ -15,12 +15,6 @@ export const validate = (schema: ZodType) => {
     _res: Response,
     next: NextFunction
   ) => {
-
-    console.log("VALIDATION REQUEST:");
-    console.log("BODY:", JSON.stringify(req.body, null, 2));
-    console.log("PARAMS:", JSON.stringify(req.params, null, 2));
-    console.log("QUERY:", JSON.stringify(req.query, null, 2));
-
     try {
       schema.parse({
         body: req.body ?? {},
@@ -32,8 +26,14 @@ export const validate = (schema: ZodType) => {
     } catch (error) {
       if (error instanceof ZodError) {
         console.error(
-          "ZOD VALIDATION ERRORS:",
-          JSON.stringify(error.issues, null, 2)
+          "Request validation failed",
+          JSON.stringify(
+            error.issues.map(({ path, code, message }) => ({
+              path,
+              code,
+              message,
+            }))
+          )
         );
 
         next(

@@ -12,6 +12,20 @@ const api = axios.create({
 export const getAffiliateRedirectUrl = (productId) =>
   `${API_BASE_URL.replace(/\/+$/, "")}/affiliate/go/${encodeURIComponent(productId)}`;
 
+export const revokeAffiliateAnalyticsCookie = async () => {
+  const response = await fetch(
+    `${API_BASE_URL.replace(/\/+$/, "")}/affiliate/consent/revoke`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Unable to clear the affiliate analytics cookie.");
+  }
+};
+
 export const getStoreProducts = async (params = {}) => {
   const response = await api.get("/store/products", {
     params,

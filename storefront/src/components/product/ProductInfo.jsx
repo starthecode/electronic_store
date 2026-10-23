@@ -7,6 +7,7 @@ import {
     Star,
 } from "lucide-react";
 import { getAffiliateRedirectUrl } from "../../services/storeProduct.service";
+import { useAffiliateAnalytics } from "../../context/AffiliateAnalyticsContext";
 
 const EMPTY_VARIANTS = [];
 
@@ -15,6 +16,7 @@ const ProductInfo = ({
     onAddToCart,
     onBuyNow,
 }) => {
+    const { consent, attribution } = useAffiliateAnalytics();
     const variants = product?.variants || EMPTY_VARIANTS;
 
     const [selectedVariantId, setSelectedVariantId] = useState(
@@ -120,14 +122,35 @@ const ProductInfo = ({
                     </p>
                 )}
 
-                <a
-                    href={getAffiliateRedirectUrl(product.id)}
+                <form
+                    action={getAffiliateRedirectUrl(product.id)}
+                    method="post"
                     target="_blank"
-                    rel="noopener"
-                    className="mt-8 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ff8a00] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ed7d00] sm:w-fit sm:min-w-56"
+                    referrerPolicy="no-referrer"
+                    className="mt-8 sm:w-fit"
                 >
-                    View at {product.marketplace?.name || "Amazon"}
-                </a>
+                    {consent === "accepted" && attribution && (
+                        <>
+                            <input type="hidden" name="analyticsConsent" value="accepted" />
+                            {Object.entries(attribution).map(([key, value]) =>
+                                value ? (
+                                    <input
+                                        key={key}
+                                        type="hidden"
+                                        name={key}
+                                        value={value}
+                                    />
+                                ) : null
+                            )}
+                        </>
+                    )}
+                    <button
+                        type="submit"
+                        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ff8a00] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ed7d00] sm:min-w-56"
+                    >
+                        View at {product.marketplace?.name || "Amazon"}
+                    </button>
+                </form>
 
                 <p className="mt-4 max-w-xl text-xs leading-5 text-gray-500">
                     This is an affiliate link. MagDeal may earn a commission

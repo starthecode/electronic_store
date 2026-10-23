@@ -53,6 +53,9 @@ export const getAffiliateMarketplaceReport = async (params = {}) =>
 export const getAffiliateTrends = async (params = {}) =>
   unwrap(await api.get("/reports/affiliate/trends", { params }));
 
+export const getAffiliateBreakdowns = async (params = {}) =>
+  unwrap(await api.get("/reports/affiliate/breakdowns", { params }));
+
 export const getCategoriesForAffiliate = async () => {
   const data = unwrap(await api.get("/categories", {
     params: { page: 1, limit: 100, status: "ACTIVE" },

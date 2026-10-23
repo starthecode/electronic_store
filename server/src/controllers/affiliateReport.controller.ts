@@ -5,6 +5,7 @@ import {
   getAffiliateMarketplaceReport,
   getAffiliateOverview,
   getAffiliateProductReport,
+  getAffiliateBreakdownReport,
   getAffiliateTrendReport,
 } from "../services/affiliateReport.service.js";
 
@@ -79,6 +80,22 @@ export const affiliateTrends = async (
   return successResponse(
     res,
     "Affiliate trend report fetched successfully",
+    data
+  );
+};
+
+export const affiliateBreakdowns = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const data = await getAffiliateBreakdownReport({
+    from: req.query.from as string | undefined,
+    to: req.query.to as string | undefined,
+  });
+
+  return successResponse(
+    res,
+    "Affiliate attribution breakdowns fetched successfully",
     data
   );
 };

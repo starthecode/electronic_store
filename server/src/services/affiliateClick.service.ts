@@ -1,26 +1,26 @@
-import crypto from "node:crypto";
 import { prisma } from "../config/database.js";
 import { AppError } from "../utils/AppError.js";
-
-const IP_HASH_SECRET =
-  process.env.IP_HASH_SECRET || "development-ip-hash-secret";
-
-const hashIp = (ip?: string) => {
-  if (!ip) {
-    return null;
-  }
-
-  return crypto
-    .createHash("sha256")
-    .update(`${IP_HASH_SECRET}:${ip}`)
-    .digest("hex");
-};
+import { lookupAffiliateLocation } from "../utils/affiliateGeolocation.js";
+import {
+  hashVisitorCookie,
+  makeAffiliateClickData,
+  normalizeAffiliateTracking,
+  type AffiliateTrackingInput,
+} from "../utils/affiliateTracking.js";
 
 export const recordAffiliateClick = async (
   affiliateProductId: string,
-  ip?: string,
-  userAgent?: string,
-  referrer?: string
+  {
+    consented,
+    visitorCookieValue,
+    ip,
+    tracking,
+  }: {
+    consented: boolean;
+    visitorCookieValue?: string;
+    ip?: string;
+    tracking?: AffiliateTrackingInput;
+  }
 ) => {
   const product =
     await prisma.affiliateProduct.findUnique({
@@ -49,14 +49,34 @@ export const recordAffiliateClick = async (
     );
   }
 
+  const visitorSecret = process.env.JWT_SECRET;
+  if (consented && !visitorSecret) {
+    throw new Error(
+      "JWT_SECRET is required to hash consented affiliate visitor IDs"
+    );
+  }
+
+  const location = consented
+    ? await lookupAffiliateLocation(ip)
+    : {
+        countryCode: null,
+        region: null,
+        city: null,
+      };
+  const normalizedTracking = consented
+    ? normalizeAffiliateTracking(tracking ?? {})
+    : normalizeAffiliateTracking({});
+
   await prisma.affiliateClick.create({
-    data: {
-      affiliateProductId: product.id,
-      marketplaceId: product.marketplaceId,
-      ipHash: hashIp(ip),
-      userAgent: userAgent?.slice(0, 1000) || null,
-      referrer: referrer?.slice(0, 2000) || null,
-    },
+    data: makeAffiliateClickData({
+      product,
+      visitorHash:
+        consented && visitorCookieValue && visitorSecret
+          ? hashVisitorCookie(visitorCookieValue, visitorSecret)
+          : null,
+      location,
+      tracking: normalizedTracking,
+    }),
   });
 
   return {

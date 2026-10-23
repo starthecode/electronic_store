@@ -45,6 +45,16 @@ import publicCustomerRoutes from "./routes/public/customer.routes.js";
 
 const app = express();
 
+const trustedProxy = process.env.TRUST_PROXY?.trim();
+if (trustedProxy) {
+  app.set(
+    "trust proxy",
+    /^\d+$/.test(trustedProxy)
+      ? Number(trustedProxy)
+      : trustedProxy
+  );
+}
+
 app.use(helmet());
 
 const allowedOrigins = (

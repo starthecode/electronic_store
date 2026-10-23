@@ -22,54 +22,43 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import { CartProvider } from "./context/CartContext";
+import Privacy from "./pages/Privacy";
+import { AffiliateAnalyticsProvider } from "./context/AffiliateAnalyticsContext";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <Header />
-        <Routes>
+      <AffiliateAnalyticsProvider>
+        <CartProvider>
+          <Header />
+          <Routes>
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          <Route
-            path="/"
-            element={<Home />}
-          />
+            <Route path="/" element={<Home />} />
 
-          <Route
-            path="/shop"
-            element={<Shop />}
-          />
+            <Route path="/shop" element={<Shop />} />
 
-          <Route
-            path="/products/:slug"
-            element={<ProductDetails />}
-          />
+            <Route path="/products/:slug" element={<ProductDetails />} />
 
-          <Route
-            path="/cart"
-            element={<Cart />}
-          />
+            <Route path="/cart" element={<Cart />} />
 
-          <Route
-            path="/checkout"
-            element={<Checkout />}
-          />
+            <Route path="/checkout" element={<Checkout />} />
 
-          {/* Protected customer routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/account" element={<Account />} />
-            <Route path="/account/profile" element={<Profile />} />
-            <Route path="/account/addresses" element={<Addresses />} />
-            <Route path="/account/orders" element={<Orders />} />
-            <Route path="/account/orders/:id" element={<OrderDetail />} />
-          </Route>
-        </Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/account" element={<Account />} />
+              <Route path="/account/profile" element={<Profile />} />
+              <Route path="/account/addresses" element={<Addresses />} />
+              <Route path="/account/orders" element={<Orders />} />
+              <Route path="/account/orders/:id" element={<OrderDetail />} />
+            </Route>
+          </Routes>
 
-        <Footer />
-      </CartProvider>
+          <Footer />
+        </CartProvider>
+      </AffiliateAnalyticsProvider>
     </BrowserRouter>
   );
 };

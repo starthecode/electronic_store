@@ -5,6 +5,7 @@ import {
   affiliateOverview,
   affiliateProducts,
   affiliateTrends,
+  affiliateBreakdowns,
 } from "../controllers/affiliateReport.controller.js";
 
 import { requireAuth } from "../middleware/auth.middleware.js";
@@ -48,6 +49,13 @@ router.get(
   requirePermission("affiliate_reports.read"),
   validate(affiliateReportDateRangeSchema),
   asyncHandler(affiliateTrends)
+);
+
+router.get(
+  "/breakdowns",
+  requirePermission("affiliate_reports.read"),
+  validate(affiliateReportDateRangeSchema),
+  asyncHandler(affiliateBreakdowns)
 );
 
 export default router;

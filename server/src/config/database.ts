@@ -10,6 +10,7 @@ if (!connectionString) {
 
 const adapter = new PrismaPg({
   connectionString,
+  options: "-c timezone=UTC",
 });
 
 export const prisma = new PrismaClient({
