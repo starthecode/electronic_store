@@ -41,6 +41,8 @@ import checkoutRoutes from "./routes/public/checkout.routes.js";
 import customerOrderRoutes
   from "./routes/public/customerOrder.routes.js";
 import publicCustomerRoutes from "./routes/public/customer.routes.js";
+import homepageTemplateRoutes from "./routes/homepageTemplate.routes.js";
+import publicHomepageRoutes from "./routes/public/homepage.routes.js";
 
 
 const app = express();
@@ -134,6 +136,7 @@ app.use(
 );
 
 app.use("/api/store/account", publicCustomerRoutes);
+app.use("/api/store/homepage", publicHomepageRoutes);
 
 app.use("/api/health", healthRoutes);
 
@@ -169,6 +172,7 @@ app.use("/api/audit-logs", auditLogRoutes);
 app.use("/api/affiliate-marketplaces", affiliateMarketplaceRoutes);
 app.use("/api/affiliate-products", affiliateProductRoutes);
 app.use("/api/settings", settingRoutes);
+app.use("/api/homepage", homepageTemplateRoutes);
 app.use("/api/reports/affiliate", affiliateReportRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 

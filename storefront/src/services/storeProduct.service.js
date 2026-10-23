@@ -54,3 +54,13 @@ export const getStoreBrands = async () => {
 
   return response.data;
 };
+
+export const getStoreHomepageSlides = async () => {
+  const response = await api.get("/store/homepage/slides");
+  return response.data;
+};
+
+export const getStoreHomepageTestimonials = async () => {
+  const response = await api.get("/store/homepage/testimonials");
+  return response.data;
+};

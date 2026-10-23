@@ -6,6 +6,7 @@ import {
   FileText,
   LayoutDashboard,
   Package,
+  PanelsTopLeft,
   Percent,
   Settings,
   ShoppingCart,
@@ -23,6 +24,11 @@ const menuItems = [
     label: "Dashboard",
     path: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Template Editor",
+    path: "/admin/templates",
+    icon: PanelsTopLeft,
   },
   {
     label: "Products",

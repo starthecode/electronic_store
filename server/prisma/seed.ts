@@ -70,6 +70,7 @@ const main = async () => {
 
     "audit_logs.read",
     "affiliate_reports.read",
+    "homepage_templates.manage",
   ];
 
   for (const permissionName of permissions) {

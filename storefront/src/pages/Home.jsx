@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Hero from "../components/home/Hero";
 import ServiceHighlights from "../components/home/ServiceHighlights";
 import ProductCarousel from "../components/home/ProductCarousel";
@@ -164,7 +164,7 @@ const Home = () => {
 
         <CollectionBanners />
 
-        {/* <Testimonials /> */}
+        <Testimonials />
 
         <Newsletter />
       </main>

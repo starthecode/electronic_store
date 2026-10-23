@@ -38,6 +38,7 @@ import AffiliateMarketplaces from "../pages/admin/affiliate/AffiliateMarketplace
 import AffiliateMarketplaceForm from "../pages/admin/affiliate/AffiliateMarketplaceForm";
 import AffiliateProducts from "../pages/admin/affiliate/AffiliateProducts";
 import AffiliateProductForm from "../pages/admin/affiliate/AffiliateProductForm";
+import TemplateEditor from "../pages/admin/TemplateEditor";
 
 const AdminRoutes = () => {
     return (
@@ -57,6 +58,11 @@ const AdminRoutes = () => {
                     <Route
                         index
                         element={<Dashboard />}
+                    />
+
+                    <Route
+                        path="templates"
+                        element={<TemplateEditor />}
                     />
 
                     <Route
