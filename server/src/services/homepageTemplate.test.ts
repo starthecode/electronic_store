@@ -69,21 +69,12 @@ test("public slide listing filters active slides and selects public fields in di
     ]);
     assert.deepEqual(query?.select, {
       id: true,
-      brandName: true,
       title: true,
-      titleHighlight: true,
       description: true,
-      featureBullets: true,
-      specText: true,
-      priceLabel: true,
-      price: true,
-      variantLabels: true,
       buttonLabel: true,
       buttonUrl: true,
       imageUrl: true,
       mobileImageUrl: true,
-      backgroundImageUrl: true,
-      backgroundColor: true,
       sortOrder: true,
     });
   } finally {
@@ -98,6 +89,8 @@ test("admin slide CRUD records audit events", async () => {
   const originalDelete = database.homepageSlide.delete;
   const originalAuditCreate = database.auditLog.create;
   const auditActions: string[] = [];
+  let createArgs: Record<string, unknown> | undefined;
+  let updateArgs: Record<string, unknown> | undefined;
   const slide = {
     id: "slide-id",
     title: "New launch",
@@ -107,9 +100,15 @@ test("admin slide CRUD records audit events", async () => {
     imageUrl: "https://images.example/hero.jpg",
   };
 
-  database.homepageSlide.create = async () => slide;
+  database.homepageSlide.create = async (args: unknown) => {
+    createArgs = args as Record<string, unknown>;
+    return slide;
+  };
   database.homepageSlide.findUnique = async () => slide;
-  database.homepageSlide.update = async () => ({ ...slide, title: "Updated" });
+  database.homepageSlide.update = async (args: unknown) => {
+    updateArgs = args as Record<string, unknown>;
+    return { ...slide, title: "Updated" };
+  };
   database.homepageSlide.delete = async () => slide;
   database.auditLog.create = async (args: unknown) => {
     const data = (args as { data: { action: string } }).data;
@@ -118,10 +117,44 @@ test("admin slide CRUD records audit events", async () => {
   };
 
   try {
-    await createHomepageSlide(slide, "admin-id");
-    await updateHomepageSlide("slide-id", { title: "Updated" }, "admin-id");
+    const legacyCreatePayload = {
+      title: slide.title,
+      imageUrl: slide.imageUrl,
+      brandName: "Unused legacy field",
+      featureBullets: ["Unused legacy field"],
+    };
+    await createHomepageSlide(legacyCreatePayload, "admin-id");
+    const legacyUpdatePayload = {
+      title: "Updated",
+      titleHighlight: "Unused legacy field",
+    };
+    await updateHomepageSlide(
+      "slide-id",
+      legacyUpdatePayload,
+      "admin-id"
+    );
     await deleteHomepageSlide("slide-id", "admin-id");
     assert.deepEqual(auditActions, ["CREATE", "UPDATE", "DELETE"]);
+    assert.equal(
+      (createArgs?.data as Record<string, unknown>).description,
+      ""
+    );
+    assert.equal(
+      (createArgs?.data as Record<string, unknown>).buttonLabel,
+      ""
+    );
+    assert.equal(
+      (createArgs?.data as Record<string, unknown>).buttonUrl,
+      ""
+    );
+    assert.equal(
+      Object.hasOwn(createArgs?.data as object, "brandName"),
+      false
+    );
+    assert.equal(
+      Object.hasOwn(updateArgs?.data as object, "titleHighlight"),
+      false
+    );
   } finally {
     database.homepageSlide.create = originalCreate;
     database.homepageSlide.findUnique = originalFindUnique;
@@ -206,8 +239,6 @@ test("testimonial CRUD records audit events", async () => {
 test("template validators reject unsafe destinations and invalid star ratings", () => {
   const baseSlide = {
     title: "Featured",
-    description: "Browse new arrivals",
-    buttonLabel: "Shop now",
     imageUrl: "https://images.example/slide.jpg",
   };
   const baseTestimonial = {
@@ -243,15 +274,9 @@ test("template validators reject unsafe destinations and invalid star ratings", 
       body: {
         ...baseSlide,
         buttonUrl: "/shop",
-        brandName: "Device brand",
-        titleHighlight: "Highlighted copy",
-        featureBullets: ["Foldable display"],
-        specText: "256GB + 12GB",
-        priceLabel: "BDT",
-        price: "285,999",
-        variantLabels: ["Graphite"],
-        backgroundImageUrl: "https://images.example/background.jpg",
-        backgroundColor: "#ffffff",
+        buttonLabel: "Shop now",
+        description: "Browse new arrivals",
+        mobileImageUrl: "https://images.example/mobile.jpg",
       },
       params: {},
       query: {},
@@ -261,8 +286,7 @@ test("template validators reject unsafe destinations and invalid star ratings", 
     createHomepageSlideSchema.parse({
       body: {
         ...baseSlide,
-        buttonUrl: "/shop",
-        featureBullets: ["x".repeat(181)],
+        title: "   ",
       },
       params: {},
       query: {},
@@ -270,11 +294,22 @@ test("template validators reject unsafe destinations and invalid star ratings", 
   );
   assert.throws(() =>
     createHomepageSlideSchema.parse({
-      body: { ...baseSlide, buttonUrl: "/shop", backgroundColor: "red" },
+      body: { ...baseSlide, mobileImageUrl: "javascript:alert(1)" },
       params: {},
       query: {},
     })
   );
+
+  const parsed = createHomepageSlideSchema.parse({
+    body: {
+      ...baseSlide,
+      brandName: "Legacy field",
+      featureBullets: ["Legacy field"],
+    },
+    params: {},
+    query: {},
+  });
+  assert.deepEqual(Object.keys(parsed.body).sort(), ["imageUrl", "title"]);
 });
 
 test("slide reorder requires every id once and persists the supplied order", async () => {

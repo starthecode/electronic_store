@@ -29,21 +29,12 @@ const inputClass =
 const labelClass = "block text-sm font-medium text-gray-700";
 
 const slideDefaults = {
-  brandName: "",
   title: "",
-  titleHighlight: "",
   description: "",
-  featureBullets: "",
-  specText: "",
-  priceLabel: "",
-  price: "",
-  variantLabels: "",
-  buttonLabel: "Shop Now",
-  buttonUrl: "/shop",
+  buttonLabel: "",
+  buttonUrl: "",
   imageUrl: "",
   mobileImageUrl: "",
-  backgroundImageUrl: "",
-  backgroundColor: "",
   sortOrder: 0,
   isActive: true,
 };
@@ -87,12 +78,6 @@ const validDestination = (value) => {
   }
   return validImageUrl(value);
 };
-
-const linesFromList = (value) =>
-  Array.isArray(value) ? value.join("\n") : "";
-
-const listFromLines = (value) =>
-  value.split("\n").map((item) => item.trim()).filter(Boolean);
 
 function ImagePreview({ src, alt, className }) {
   const [failedSrc, setFailedSrc] = useState("");
@@ -173,21 +158,12 @@ export default function TemplateEditor() {
     setEditor({ id: item.id });
     setForm(tab === "slides"
       ? {
-          brandName: item.brandName ?? "",
           title: item.title ?? "",
-          titleHighlight: item.titleHighlight ?? "",
           description: item.description ?? "",
-          featureBullets: linesFromList(item.featureBullets),
-          specText: item.specText ?? "",
-          priceLabel: item.priceLabel ?? "",
-          price: item.price ?? "",
-          variantLabels: linesFromList(item.variantLabels),
           buttonLabel: item.buttonLabel ?? "",
           buttonUrl: item.buttonUrl ?? "",
           imageUrl: item.imageUrl ?? "",
           mobileImageUrl: item.mobileImageUrl ?? "",
-          backgroundImageUrl: item.backgroundImageUrl ?? "",
-          backgroundColor: item.backgroundColor ?? "",
           sortOrder: item.sortOrder ?? 0,
           isActive: Boolean(item.isActive),
         }
@@ -211,25 +187,20 @@ export default function TemplateEditor() {
     setNotice("");
 
     if (tab === "slides") {
-      if (!validDestination(form.buttonUrl.trim())) {
+      if (!form.title.trim()) {
+        setError("Title is required.");
+        return;
+      }
+      if (form.buttonUrl.trim() && !validDestination(form.buttonUrl.trim())) {
         setError("Use a storefront path such as /shop or a valid HTTP/HTTPS destination URL.");
         return;
       }
       if (
         !validImageUrl(form.imageUrl.trim()) ||
         (form.mobileImageUrl.trim() &&
-          !validImageUrl(form.mobileImageUrl.trim())) ||
-        (form.backgroundImageUrl.trim() &&
-          !validImageUrl(form.backgroundImageUrl.trim()))
+          !validImageUrl(form.mobileImageUrl.trim()))
       ) {
-        setError("Product, mobile, and background images must use valid HTTP or HTTPS URLs.");
-        return;
-      }
-      if (
-        form.backgroundColor &&
-        !/^#[0-9a-fA-F]{6}$/.test(form.backgroundColor)
-      ) {
-        setError("Background color must be a six-digit hex color.");
+        setError("Desktop and mobile images must use valid HTTP or HTTPS URLs.");
         return;
       }
     } else if (
@@ -245,21 +216,12 @@ export default function TemplateEditor() {
       sortOrder: Number(form.sortOrder),
       ...(tab === "slides"
         ? {
-            brandName: form.brandName.trim() || null,
             title: form.title.trim(),
-            titleHighlight: form.titleHighlight.trim() || null,
             description: form.description.trim(),
-            featureBullets: listFromLines(form.featureBullets),
-            specText: form.specText.trim() || null,
-            priceLabel: form.priceLabel.trim() || null,
-            price: form.price.trim() || null,
-            variantLabels: listFromLines(form.variantLabels),
             buttonLabel: form.buttonLabel.trim(),
             buttonUrl: form.buttonUrl.trim(),
             imageUrl: form.imageUrl.trim(),
             mobileImageUrl: form.mobileImageUrl.trim() || null,
-            backgroundImageUrl: form.backgroundImageUrl.trim() || null,
-            backgroundColor: form.backgroundColor.trim() || null,
           }
         : {
             customerName: form.customerName.trim(),
@@ -453,16 +415,12 @@ export default function TemplateEditor() {
                 </div>
                 {tab === "slides" ? (
                   <>
-                    {item.brandName && (
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">{item.brandName}</p>
+                    {item.description && (
+                      <p className="mt-1 line-clamp-2 text-sm text-gray-600">{item.description}</p>
                     )}
-                    <p className="mt-1 line-clamp-2 text-sm text-gray-600">{item.description}</p>
-                    <p className="mt-2 text-xs text-gray-400">
+                    {(item.buttonLabel || item.buttonUrl) && (
+                      <p className="mt-2 text-xs text-gray-400">
                       {item.buttonLabel} · {item.buttonUrl}
-                    </p>
-                    {(item.priceLabel || item.price) && (
-                      <p className="mt-1 text-xs font-medium text-gray-600">
-                        {[item.priceLabel, item.price].filter(Boolean).join(" ")}
                       </p>
                     )}
                     {item.mobileImageUrl && (
@@ -569,43 +527,18 @@ export default function TemplateEditor() {
             <form onSubmit={save} className="space-y-4">
               {tab === "slides" ? (
                 <>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField label="Brand name (optional)">
-                      <input className={inputClass} maxLength={100} value={form.brandName} onChange={(event) => updateField("brandName", event.target.value)} />
-                    </FormField>
-                    <FormField label="Highlighted title text (optional)">
-                      <input className={inputClass} maxLength={150} value={form.titleHighlight} onChange={(event) => updateField("titleHighlight", event.target.value)} />
-                    </FormField>
-                  </div>
                   <FormField label="Title">
                     <input className={inputClass} required maxLength={150} value={form.title} onChange={(event) => updateField("title", event.target.value)} />
                   </FormField>
                   <FormField label="Description">
-                    <textarea className={inputClass} required rows={3} maxLength={1500} value={form.description} onChange={(event) => updateField("description", event.target.value)} />
-                  </FormField>
-                  <FormField label="Feature bullets (optional, one per line)">
-                    <textarea className={inputClass} rows={3} placeholder={"Multitasking made simple\nImmersive viewing experience"} value={form.featureBullets} onChange={(event) => updateField("featureBullets", event.target.value)} />
-                  </FormField>
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <FormField label="Specifications / storage text (optional)">
-                      <input className={inputClass} maxLength={180} placeholder="256GB + 12GB" value={form.specText} onChange={(event) => updateField("specText", event.target.value)} />
-                    </FormField>
-                    <FormField label="Price label (optional)">
-                      <input className={inputClass} maxLength={60} placeholder="BDT" value={form.priceLabel} onChange={(event) => updateField("priceLabel", event.target.value)} />
-                    </FormField>
-                    <FormField label="Price (optional)">
-                      <input className={inputClass} maxLength={60} placeholder="285,999" value={form.price} onChange={(event) => updateField("price", event.target.value)} />
-                    </FormField>
-                  </div>
-                  <FormField label="Color or variant labels (optional, one per line)">
-                    <textarea className={inputClass} rows={2} placeholder={"Graygreen\nPhantom Black\nBeige"} value={form.variantLabels} onChange={(event) => updateField("variantLabels", event.target.value)} />
+                    <textarea className={inputClass} rows={3} maxLength={1500} value={form.description} onChange={(event) => updateField("description", event.target.value)} />
                   </FormField>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField label="Button label">
-                      <input className={inputClass} required maxLength={60} value={form.buttonLabel} onChange={(event) => updateField("buttonLabel", event.target.value)} />
+                    <FormField label="Button label (optional)">
+                      <input className={inputClass} maxLength={60} value={form.buttonLabel} onChange={(event) => updateField("buttonLabel", event.target.value)} />
                     </FormField>
-                    <FormField label="Button destination URL or route">
-                      <input className={inputClass} required maxLength={2048} placeholder="/shop or https://example.com" value={form.buttonUrl} onChange={(event) => updateField("buttonUrl", event.target.value)} />
+                    <FormField label="Button destination URL or route (optional)">
+                      <input className={inputClass} maxLength={2048} placeholder="/shop or https://example.com" value={form.buttonUrl} onChange={(event) => updateField("buttonUrl", event.target.value)} />
                     </FormField>
                   </div>
                   <FormField label="Desktop / primary image URL">
@@ -619,20 +552,6 @@ export default function TemplateEditor() {
                   </FormField>
                   {form.mobileImageUrl && (
                     <ImagePreview src={form.mobileImageUrl} alt="Mobile slide preview" className="h-40 w-full rounded-xl object-cover sm:max-w-xs" />
-                  )}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField label="Optional background image URL">
-                      <input className={inputClass} type="url" maxLength={2048} value={form.backgroundImageUrl} onChange={(event) => updateField("backgroundImageUrl", event.target.value)} />
-                    </FormField>
-                    <FormField label="Optional background color">
-                      <div className="mt-1 flex gap-2">
-                        <input className="h-10 w-14 rounded-lg border border-gray-200 p-1" type="color" value={/^#[0-9a-fA-F]{6}$/.test(form.backgroundColor) ? form.backgroundColor : "#ffffff"} onChange={(event) => updateField("backgroundColor", event.target.value)} aria-label="Choose background color" />
-                        <input className={`${inputClass} mt-0`} maxLength={7} placeholder="#ffffff" value={form.backgroundColor} onChange={(event) => updateField("backgroundColor", event.target.value)} />
-                      </div>
-                    </FormField>
-                  </div>
-                  {form.backgroundImageUrl && (
-                    <ImagePreview src={form.backgroundImageUrl} alt="Background image preview" className="h-32 w-full rounded-xl object-cover" />
                   )}
                 </>
               ) : (

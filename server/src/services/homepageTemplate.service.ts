@@ -7,29 +7,37 @@ const orderedBy = [
   { createdAt: "asc" as const },
 ];
 
+const slideFields = {
+  id: true,
+  title: true,
+  description: true,
+  buttonLabel: true,
+  buttonUrl: true,
+  imageUrl: true,
+  mobileImageUrl: true,
+  sortOrder: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+};
+
 export const getAdminHomepageSlides = () =>
-  prisma.homepageSlide.findMany({ orderBy: orderedBy });
+  prisma.homepageSlide.findMany({
+    select: slideFields,
+    orderBy: orderedBy,
+  });
 
 export const getPublicHomepageSlides = () =>
   prisma.homepageSlide.findMany({
     where: { isActive: true },
     select: {
       id: true,
-      brandName: true,
       title: true,
-      titleHighlight: true,
       description: true,
-      featureBullets: true,
-      specText: true,
-      priceLabel: true,
-      price: true,
-      variantLabels: true,
       buttonLabel: true,
       buttonUrl: true,
       imageUrl: true,
       mobileImageUrl: true,
-      backgroundImageUrl: true,
-      backgroundColor: true,
       sortOrder: true,
     },
     orderBy: orderedBy,
@@ -37,27 +45,31 @@ export const getPublicHomepageSlides = () =>
 
 export const createHomepageSlide = async (
   data: {
-    brandName?: string | null;
     title: string;
-    titleHighlight?: string | null;
-    description: string;
-    featureBullets?: string[];
-    specText?: string | null;
-    priceLabel?: string | null;
-    price?: string | null;
-    variantLabels?: string[];
-    buttonLabel: string;
-    buttonUrl: string;
+    description?: string;
+    buttonLabel?: string;
+    buttonUrl?: string;
     imageUrl: string;
     mobileImageUrl?: string | null;
-    backgroundImageUrl?: string | null;
-    backgroundColor?: string | null;
     sortOrder?: number;
     isActive?: boolean;
   },
   userId: string
 ) => {
-  const slide = await prisma.homepageSlide.create({ data });
+  const slide = await prisma.homepageSlide.create({
+    data: {
+      title: data.title,
+      description: data.description ?? "",
+      buttonLabel: data.buttonLabel ?? "",
+      buttonUrl: data.buttonUrl ?? "",
+      imageUrl: data.imageUrl,
+      ...(data.mobileImageUrl !== undefined
+        ? { mobileImageUrl: data.mobileImageUrl }
+        : {}),
+      ...(data.sortOrder !== undefined ? { sortOrder: data.sortOrder } : {}),
+      ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
+    },
+  });
   await createAuditLog({
     userId,
     action: "CREATE",
@@ -71,21 +83,12 @@ export const createHomepageSlide = async (
 export const updateHomepageSlide = async (
   id: string,
   data: {
-    brandName?: string | null;
     title?: string;
-    titleHighlight?: string | null;
     description?: string;
-    featureBullets?: string[];
-    specText?: string | null;
-    priceLabel?: string | null;
-    price?: string | null;
-    variantLabels?: string[];
     buttonLabel?: string;
     buttonUrl?: string;
     imageUrl?: string;
     mobileImageUrl?: string | null;
-    backgroundImageUrl?: string | null;
-    backgroundColor?: string | null;
     sortOrder?: number;
     isActive?: boolean;
   },
@@ -94,9 +97,21 @@ export const updateHomepageSlide = async (
   const existing = await prisma.homepageSlide.findUnique({ where: { id } });
   if (!existing) throw new AppError("Homepage slide not found", 404);
 
+  const slideData = {
+    ...(data.title !== undefined ? { title: data.title } : {}),
+    ...(data.description !== undefined ? { description: data.description } : {}),
+    ...(data.buttonLabel !== undefined ? { buttonLabel: data.buttonLabel } : {}),
+    ...(data.buttonUrl !== undefined ? { buttonUrl: data.buttonUrl } : {}),
+    ...(data.imageUrl !== undefined ? { imageUrl: data.imageUrl } : {}),
+    ...(data.mobileImageUrl !== undefined
+      ? { mobileImageUrl: data.mobileImageUrl }
+      : {}),
+    ...(data.sortOrder !== undefined ? { sortOrder: data.sortOrder } : {}),
+    ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
+  };
   const slide = await prisma.homepageSlide.update({
     where: { id },
-    data,
+    data: slideData,
   });
   await createAuditLog({
     userId,
@@ -104,7 +119,7 @@ export const updateHomepageSlide = async (
     entity: "HomepageSlide",
     entityId: slide.id,
     description: `Updated homepage slide "${slide.title}"`,
-    metadata: { fields: Object.keys(data) },
+    metadata: { fields: Object.keys(slideData) },
   });
   return slide;
 };
