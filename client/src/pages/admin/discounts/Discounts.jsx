@@ -250,7 +250,7 @@ const handleDelete = async (discount) => {
             type="button"
             onClick={() => loadDiscounts(true)}
             disabled={refreshing}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:opacity-50 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -268,7 +268,7 @@ const handleDelete = async (discount) => {
             onClick={() =>
               navigate("/admin/discounts/new")
             }
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-gray-900 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-black"
+            className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition ui-btn-primary"
           >
             <Plus size={17} />
             Add Discount
@@ -364,7 +364,7 @@ const handleDelete = async (discount) => {
                                   `/admin/discounts/${discount.id}`
                                 )
                               }
-                              className="block max-w-[300px] truncate text-sm font-semibold text-gray-900 hover:underline"
+                              className="block max-w-[300px] truncate text-sm font-semibold hover:underline ui-btn-outline"
                             >
                               {discount.name}
                             </button>
@@ -382,7 +382,7 @@ const handleDelete = async (discount) => {
                                     discount.code
                                   )
                                 }
-                                className="text-gray-400 hover:text-gray-900"
+                                className="ui-btn-outline"
                               >
                                 <Copy size={13} />
                               </button>
@@ -600,10 +600,10 @@ function ActionButton({
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className={`flex h-9 w-9 items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`flex h-9 w-9 items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-40${
         danger
-          ? "text-gray-400 hover:bg-red-50 hover:text-red-600"
-          : "text-gray-400 hover:bg-gray-100 hover:text-gray-900"
+          ? "text-gray-400 hover:bg-red-50 hover:text-red-600 ui-btn-danger"
+          : "text-gray-400 hover:bg-orange-50 hover:text-orange-700 ui-btn-outline"
       }`}
     >
       {children}
@@ -641,7 +641,7 @@ function Pagination({
               pagination.page - 1
             )
           }
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-lg border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
         >
           Previous
         </button>
@@ -657,7 +657,7 @@ function Pagination({
               pagination.page + 1
             )
           }
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-lg border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
         >
           Next
         </button>
@@ -698,7 +698,7 @@ function EmptyState({
           <button
             type="button"
             onClick={onClear}
-            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
           >
             Clear Filters
           </button>
@@ -706,7 +706,7 @@ function EmptyState({
           <button
             type="button"
             onClick={onCreate}
-            className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-black"
+            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium ui-btn-primary"
           >
             <Plus size={16} />
             Add Discount

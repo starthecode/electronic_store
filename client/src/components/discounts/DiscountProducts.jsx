@@ -244,7 +244,7 @@ export default function DiscountProducts({
         <button
           type="button"
           onClick={openAddModal}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 text-sm font-medium text-white hover:bg-black"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium ui-btn-primary"
         >
           <Plus size={16} />
           Add Product
@@ -299,7 +299,7 @@ export default function DiscountProducts({
                     onClick={() =>
                       handleRemove(product)
                     }
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40 ui-btn-danger"
                     title="Remove product"
                   >
                     {removingId ===
@@ -384,7 +384,7 @@ function SelectionModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-900"
+            className="flex h-9 w-9 items-center justify-center rounded-lg ui-btn-outline"
           >
             <X size={18} />
           </button>
@@ -433,7 +433,7 @@ function SelectionModal({
                   onClick={() =>
                     onSelect(item)
                   }
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:bg-gray-50 disabled:opacity-50"
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left disabled:opacity-50 ui-btn-outline"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-gray-900">
@@ -492,7 +492,7 @@ function EmptyAssignment({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        className="mt-4 inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
       >
         <Plus size={15} />
         Add Product

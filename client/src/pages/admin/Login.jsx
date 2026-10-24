@@ -170,7 +170,7 @@ const Login = () => {
                       (previous) => !previous
                     )
                   }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 ui-btn-outline"
                   aria-label={
                     showPassword
                       ? "Hide password"
@@ -189,7 +189,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loginLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-primary"
             >
               {loginLoading ? (
                 "Signing in..."

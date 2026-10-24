@@ -317,7 +317,7 @@ const FulfillmentDetails = () => {
               onClick={() =>
                 window.history.back()
               }
-              className="mb-4 inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900"
+              className="mb-4 inline-flex items-center gap-2 text-sm ui-btn-outline"
             >
               <ArrowLeft size={17} />
               Back to Fulfillment
@@ -507,7 +507,7 @@ const FulfillmentDetails = () => {
                             )
                         )
                       }
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium disabled:opacity-50 ui-btn-outline"
                     >
                       <Package size={17} />
                       {actionLoading ===
@@ -532,7 +532,7 @@ const FulfillmentDetails = () => {
                             )
                         )
                       }
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium disabled:opacity-50 ui-btn-outline"
                     >
                       <RotateCcw size={17} />
                       {actionLoading ===
@@ -557,7 +557,7 @@ const FulfillmentDetails = () => {
                             )
                         )
                       }
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50 ui-btn-success"
                     >
                       <Truck size={17} />
                       {actionLoading ===
@@ -584,7 +584,7 @@ const FulfillmentDetails = () => {
                           true
                         )
                       }
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 ui-btn-danger"
                     >
                       <XCircle size={17} />
                       {actionLoading ===
@@ -611,7 +611,7 @@ const FulfillmentDetails = () => {
                           true
                         )
                       }
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-orange-600 px-4 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium disabled:opacity-50 ui-btn-primary"
                     >
                       <RotateCcw size={17} />
                       {actionLoading ===

@@ -84,7 +84,7 @@ const Hero = () => {
   };
 
   const buttonClass =
-    "inline-flex min-h-12 items-center justify-center rounded-lg bg-[#477baa] px-7 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition hover:bg-[#396b98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#477baa]";
+    "inline-flex min-h-12 items-center justify-center rounded-lg bg-[#ff8a00] px-7 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition hover:bg-[#ed7d00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a00]";
 
   return (
     <section className="px-4 pt-5 sm:px-6 lg:px-8">
@@ -119,7 +119,7 @@ const Hero = () => {
               </p>
             )}
 
-            <h1 className="max-w-2xl whitespace-pre-line break-words text-[36px] font-semibold leading-[0.98] tracking-[-1.7px] text-[#58666d] sm:text-[48px] lg:text-[58px]">
+            <h1 className="max-w-2xl whitespace-pre-line break-words text-sm font-semibold leading-[0.98] tracking-[-1.7px] text-[#58666d] sm:text-md lg:text-lg">
               {slide.titleHighlight && (
                 <span className="mb-1 block text-[#477baa]">
                   {slide.titleHighlight}
@@ -181,12 +181,12 @@ const Hero = () => {
                 href={slide.buttonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${buttonClass} mt-6`}
+                className={(`${buttonClass}mt-6`) + "ui-btn-primary"}
               >
                 {slide.buttonLabel}
               </a>
             ) : (
-              <Link to={slide.buttonUrl} className={`${buttonClass} mt-6`}>
+              <Link to={slide.buttonUrl} className={(`${buttonClass}mt-6`) + "ui-btn-primary"}>
                 {slide.buttonLabel}
               </Link>
             )}
@@ -229,7 +229,7 @@ const Hero = () => {
               type="button"
               aria-label="Previous homepage slide"
               onClick={() => move(-1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white/90 transition hover:bg-white"
+              className="flex h-9 w-9 items-center justify-center rounded-full border transition ui-btn-outline"
             >
               <ArrowLeft size={16} />
             </button>
@@ -237,7 +237,7 @@ const Hero = () => {
               type="button"
               aria-label="Next homepage slide"
               onClick={() => move(1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-700"
+              className="flex h-9 w-9 items-center justify-center rounded-full transition ui-btn-primary"
             >
               <ArrowRight size={16} />
             </button>

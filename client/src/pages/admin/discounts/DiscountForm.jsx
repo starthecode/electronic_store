@@ -512,7 +512,7 @@ export default function DiscountForm() {
           onClick={() =>
             navigate("/admin/discounts")
           }
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
         >
           <ArrowLeft size={17} />
           Back to Discounts
@@ -537,7 +537,7 @@ export default function DiscountForm() {
             onClick={() =>
               navigate("/admin/discounts")
             }
-            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-gray-900"
+            className="mb-3 inline-flex items-center gap-2 text-sm font-medium transition ui-btn-outline"
           >
             <ArrowLeft size={16} />
             Back to Discounts
@@ -991,7 +991,7 @@ export default function DiscountForm() {
                 navigate("/admin/discounts")
               }
               disabled={saving}
-              className="h-11 rounded-xl border border-gray-200 bg-white px-5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+              className="h-11 rounded-xl border px-5 text-sm font-medium transition disabled:opacity-50 ui-btn-outline"
             >
               Cancel
             </button>
@@ -999,7 +999,7 @@ export default function DiscountForm() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-gray-900 px-5 text-sm font-medium text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-primary"
             >
               {saving ? (
                 <Loader2
@@ -1098,11 +1098,11 @@ function OptionCard({
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex min-h-[86px] items-start gap-3 rounded-xl border p-4 text-left transition ${
+      className={(`relative flex min-h-[86px] items-start gap-3 rounded-xl border p-4 text-left transition${
         selected
-          ? "border-gray-900 bg-gray-50 ring-1 ring-gray-900"
-          : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
-      }`}
+          ? "ring-1"
+          : ""
+      }`) + "ui-btn-outline"}
     >
       <div
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${

@@ -56,11 +56,11 @@ const ProductTabs = ({ product }) => {
                         onClick={() =>
                             setActiveTab(tab.id)
                         }
-                        className={`relative shrink-0 px-5 pb-5 text-sm font-medium ${
+                        className={(`relative shrink-0 px-5 pb-5 text-sm font-medium ${
                             activeTab === tab.id
                                 ? "text-[#ff8a00]"
                                 : "text-gray-500 hover:text-black"
-                        }`}
+                        }`)}
                     >
                         {tab.label}
 

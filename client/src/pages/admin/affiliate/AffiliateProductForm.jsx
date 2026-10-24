@@ -269,7 +269,7 @@ export default function AffiliateProductForm() {
       <button
         type="button"
         onClick={() => navigate("/admin/affiliate/products")}
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-600"
+        className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
       >
         <ArrowLeft size={16} /> Back to Affiliate Products
       </button>
@@ -380,7 +380,7 @@ export default function AffiliateProductForm() {
                     set("imageUrls", [...form.imageUrls, ""])
                   }
                   disabled={form.imageUrls.length >= 20}
-                  className="inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-medium"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-medium ui-btn-outline"
                 >
                   <ImagePlus size={16} /> Add image
                 </button>
@@ -422,7 +422,7 @@ export default function AffiliateProductForm() {
                             onClick={() => moveImage(index, -1)}
                             disabled={index === 0}
                             aria-label={`Move image ${index + 1} up`}
-                            className="rounded-lg border p-2 text-gray-600 disabled:opacity-40"
+                            className="rounded-lg border p-2 disabled:opacity-40 ui-btn-outline"
                           >
                             <ArrowUp size={16} />
                           </button>
@@ -431,7 +431,7 @@ export default function AffiliateProductForm() {
                             onClick={() => moveImage(index, 1)}
                             disabled={index === form.imageUrls.length - 1}
                             aria-label={`Move image ${index + 1} down`}
-                            className="rounded-lg border p-2 text-gray-600 disabled:opacity-40"
+                            className="rounded-lg border p-2 disabled:opacity-40 ui-btn-outline"
                           >
                             <ArrowDown size={16} />
                           </button>
@@ -446,7 +446,7 @@ export default function AffiliateProductForm() {
                               )
                             }
                             aria-label={`Remove image ${index + 1}`}
-                            className="rounded-lg border border-red-200 p-2 text-red-600"
+                            className="rounded-lg border border-red-200 p-2 text-red-600 ui-btn-danger"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -498,13 +498,13 @@ export default function AffiliateProductForm() {
           <button
             type="button"
             onClick={() => navigate("/admin/affiliate/products")}
-            className="h-10 rounded-xl border px-4 text-sm"
+            className="h-10 rounded-xl border px-4 text-sm ui-btn-outline"
           >
             Cancel
           </button>
           <button
             disabled={saving}
-            className="inline-flex h-10 items-center gap-2 rounded-xl bg-gray-900 px-5 text-sm font-medium text-white disabled:opacity-50"
+            className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-sm font-medium disabled:opacity-50 ui-btn-primary"
           >
             <Save size={16} />
             {saving ? "Saving..." : "Save Affiliate Product"}

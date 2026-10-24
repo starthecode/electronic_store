@@ -107,7 +107,7 @@ const Orders = () => {
 
             <Link
               to="/shop"
-              className="mt-6 inline-flex rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              className="mt-6 inline-flex rounded-xl px-5 py-3 text-sm font-medium transition ui-btn-primary"
             >
               Start shopping
             </Link>
@@ -120,7 +120,7 @@ const Orders = () => {
               <Link
                 key={order.id}
                 to={`/account/orders/${order.id}`}
-                className="block rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-gray-300 hover:shadow-sm"
+                className="block rounded-2xl border p-5 transition hover:shadow-sm ui-btn-outline"
               >
                 <div className="flex items-start justify-between gap-6">
                   <div className="min-w-0">

@@ -52,11 +52,11 @@ const ProductGallery = ({ product }) => {
                             key={image.id}
                             type="button"
                             onClick={() => setSelectedImage(index)}
-                            className={`aspect-square overflow-hidden rounded-xl bg-[#f7f7f7] ${
+                            className={(`aspect-square overflow-hidden rounded-xl bg-[#f7f7f7] ${
                                 selectedImage === index
                                     ? "ring-2 ring-[#ff8a00] ring-offset-2"
                                     : "border border-transparent"
-                            }`}
+                            }`)}
                         >
                             {failedImages[image.id] ? (
                                 <span className="flex h-full w-full items-center justify-center p-2 text-center text-[10px] text-gray-400">

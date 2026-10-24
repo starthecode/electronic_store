@@ -58,7 +58,7 @@ const InventoryAdjustModal = ({ inventory, onClose, onSuccess }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-2 ui-btn-outline"
           >
             <X size={20} />
           </button>
@@ -161,7 +161,7 @@ const InventoryAdjustModal = ({ inventory, onClose, onSuccess }) => {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border px-4 py-2.5 text-sm font-medium ui-btn-outline"
             >
               Cancel
             </button>
@@ -169,7 +169,7 @@ const InventoryAdjustModal = ({ inventory, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ui-btn-primary"
             >
               {loading ? (
                 <Loader2 size={17} className="animate-spin" />

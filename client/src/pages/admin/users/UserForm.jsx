@@ -252,7 +252,7 @@ export default function UserForm() {
                 onClick={() =>
                     navigate("/admin/users")
                 }
-                className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900"
+                className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
             >
                 <ArrowLeft size={16} />
                 Back to Users
@@ -480,7 +480,7 @@ export default function UserForm() {
                                                 !value
                                         )
                                     }
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 ui-btn-outline"
                                 >
                                     {showPassword ? (
                                         <EyeOff size={17} />
@@ -499,7 +499,7 @@ export default function UserForm() {
                         onClick={() =>
                             navigate("/admin/users")
                         }
-                        className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700"
+                        className="rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
                     >
                         Cancel
                     </button>
@@ -507,7 +507,7 @@ export default function UserForm() {
                     <button
                         type="submit"
                         disabled={saving}
-                        className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+                        className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium disabled:opacity-50 ui-btn-primary"
                     >
                         {saving ? (
                             <Loader2

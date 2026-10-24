@@ -138,7 +138,7 @@ const Dashboard = () => {
           type="button"
           onClick={fetchDashboard}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 self-start rounded-lg border px-4 py-2 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
         >
           <RefreshCw
             size={16}
@@ -160,7 +160,7 @@ const Dashboard = () => {
           <button
             type="button"
             onClick={fetchDashboard}
-            className="text-sm font-medium text-red-700 hover:underline"
+            className="text-sm font-medium text-red-700 hover:underline ui-btn-danger"
           >
             Retry
           </button>

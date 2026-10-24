@@ -151,7 +151,7 @@ const Home = () => {
             </p>
             <Link
               to="/shop"
-              className="mt-5 inline-flex rounded-full bg-black px-5 py-3 text-xs font-medium text-white"
+              className="mt-5 inline-flex rounded-full px-5 py-3 text-xs font-medium ui-btn-primary"
             >
               Browse shop
             </Link>

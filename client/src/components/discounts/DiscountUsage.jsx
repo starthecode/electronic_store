@@ -214,7 +214,7 @@ export default function DiscountUsage({
                         1
                     )
                   }
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronLeft
                     size={16}
@@ -233,7 +233,7 @@ export default function DiscountUsage({
                         1
                     )
                   }
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronRight
                     size={16}

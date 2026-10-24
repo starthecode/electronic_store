@@ -115,7 +115,7 @@ const AuditLogDetails = () => {
             onClick={() =>
               navigate("/admin/audit-logs")
             }
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
+            className="inline-flex items-center gap-2 text-sm ui-btn-outline"
           >
             <ArrowLeft size={16} />
             Back to Audit Logs
@@ -144,7 +144,7 @@ const AuditLogDetails = () => {
           onClick={() =>
             navigate("/admin/audit-logs")
           }
-          className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-gray-900"
+          className="mb-5 inline-flex items-center gap-2 text-sm transition ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Audit Logs

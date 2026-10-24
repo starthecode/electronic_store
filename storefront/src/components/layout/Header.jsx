@@ -62,7 +62,7 @@ const Header = () => {
           <button
             type="button"
             onClick={() => navigate("/shop")}
-            className="hidden h-9 w-[150px] items-center justify-between rounded-full bg-[#f7f7f7] px-4 text-[11px] text-gray-500 sm:flex"
+            className="hidden h-9 w-[150px] items-center justify-between rounded-full px-4 text-[11px] sm:flex ui-btn-outline"
           >
             <span>Search</span>
             <Search size={14} className="text-black" />
@@ -86,7 +86,7 @@ const Header = () => {
             type="button"
             onClick={() => navigate("/account")}
             aria-label="Account"
-          >
+           className="ui-btn-outline">
             <UserRound size={17} strokeWidth={1.6} />
           </button>
         </div>

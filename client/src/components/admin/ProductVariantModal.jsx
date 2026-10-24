@@ -161,7 +161,7 @@ const ProductVariantModal = ({
             type="button"
             onClick={onClose}
             disabled={saving}
-            className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-2 transition ui-btn-outline"
           >
             <X size={20} />
           </button>
@@ -359,7 +359,7 @@ const ProductVariantModal = ({
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border px-5 py-2.5 text-sm font-medium transition disabled:opacity-50 ui-btn-outline"
             >
               Cancel
             </button>
@@ -367,7 +367,7 @@ const ProductVariantModal = ({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-primary"
             >
               {saving ? (
                 <>

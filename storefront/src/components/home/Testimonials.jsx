@@ -140,7 +140,7 @@ const Testimonials = () => {
                 type="button"
                 aria-label="Previous testimonials"
                 onClick={() => scroll(-1)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50"
+                className="flex h-9 w-9 items-center justify-center rounded-full border ui-btn-outline"
               >
                 <ArrowLeft size={16} />
               </button>
@@ -148,7 +148,7 @@ const Testimonials = () => {
                 type="button"
                 aria-label="Next testimonials"
                 onClick={() => scroll(1)}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white hover:bg-gray-700"
+                className="flex h-9 w-9 items-center justify-center rounded-full ui-btn-primary"
               >
                 <ArrowRight size={16} />
               </button>

@@ -33,7 +33,7 @@ export default function AffiliateMarketplaceForm() {
   if (loading) return <div className="rounded-2xl border bg-white p-8 text-gray-500">Loading...</div>;
 
   return <div className="mx-auto max-w-3xl space-y-6">
-    <button onClick={() => navigate("/admin/affiliate/marketplaces")} className="inline-flex items-center gap-2 text-sm font-medium text-gray-600"><ArrowLeft size={16}/> Back to Marketplaces</button>
+    <button onClick={() => navigate("/admin/affiliate/marketplaces")} className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"><ArrowLeft size={16}/> Back to Marketplaces</button>
     <div><h1 className="text-2xl font-semibold text-gray-900">{editing ? "Edit Marketplace" : "Add Marketplace"}</h1><p className="mt-1 text-sm text-gray-500">Configure an external affiliate marketplace.</p></div>
     <form onSubmit={submit} className="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
@@ -43,7 +43,7 @@ export default function AffiliateMarketplaceForm() {
         ].map(([key,label,type,placeholder]) => <label key={key} className="text-sm font-medium text-gray-700">{label}<input type={type} value={form[key]} onChange={e => set(key,e.target.value)} placeholder={placeholder} className="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 outline-none focus:border-orange-400"/></label>)}
         <label className="text-sm font-medium text-gray-700">Status<select value={form.status} onChange={e => set("status",e.target.value)} className="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3"><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option></select></label>
       </div>
-      <div className="flex justify-end gap-3 border-t border-gray-100 pt-5"><button type="button" onClick={() => navigate("/admin/affiliate/marketplaces")} className="h-10 rounded-xl border px-4 text-sm">Cancel</button><button disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl bg-gray-900 px-5 text-sm font-medium text-white disabled:opacity-50"><Save size={16}/>{saving ? "Saving..." : "Save Marketplace"}</button></div>
+      <div className="flex justify-end gap-3 border-t border-gray-100 pt-5"><button type="button" onClick={() => navigate("/admin/affiliate/marketplaces")} className="h-10 rounded-xl border px-4 text-sm ui-btn-outline">Cancel</button><button disabled={saving} className="inline-flex h-10 items-center gap-2 rounded-xl px-5 text-sm font-medium disabled:opacity-50 ui-btn-primary"><Save size={16}/>{saving ? "Saving..." : "Save Marketplace"}</button></div>
     </form>
   </div>;
 }

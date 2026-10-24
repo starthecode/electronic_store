@@ -54,7 +54,7 @@ const InventoryTransactionsModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-2 ui-btn-outline"
           >
             <X size={20} />
           </button>

@@ -32,7 +32,7 @@ const CategorySection = ({ categories }) => {
             <a
               key={category.name}
               href="/shop"
-              className="flex min-h-[105px] flex-col items-center justify-center gap-4 border-b border-gray-200 px-3 transition hover:bg-white sm:border-b-0 sm:border-r last:border-r-0"
+              className="flex min-h-[105px] flex-col items-center justify-center gap-4 border-b px-3 transition sm:border-b-0 sm:border-r last:border-r-0 ui-btn-outline"
             >
               <Icon
                 size={22}

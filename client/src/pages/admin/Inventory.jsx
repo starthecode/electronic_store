@@ -123,7 +123,7 @@ const loadInventory = async (
           type="button"
           onClick={() => loadInventory(pagination.page)}
           disabled={loading}
-          className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-60 ui-btn-outline"
         >
           <RefreshCw
             size={17}
@@ -307,7 +307,7 @@ const loadInventory = async (
                           onClick={() =>
                             setAdjustInventoryItem(item)
                           }
-                          className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+                          className="rounded-lg border p-2 ui-btn-outline"
                         >
                           <Settings size={17} />
                         </button>
@@ -318,7 +318,7 @@ const loadInventory = async (
                           onClick={() =>
                             setHistoryInventory(item)
                           }
-                          className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+                          className="rounded-lg border p-2 ui-btn-outline"
                         >
                           <History size={17} />
                         </button>
@@ -364,7 +364,7 @@ const loadInventory = async (
                       pagination.page - 1
                     )
                   }
-                  className="rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border p-2 disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -385,7 +385,7 @@ const loadInventory = async (
                       pagination.page + 1
                     )
                   }
-                  className="rounded-lg border border-gray-300 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border p-2 disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronRight size={18} />
                 </button>

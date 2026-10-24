@@ -166,7 +166,7 @@ const Products = () => {
           onClick={() =>
             navigate("/admin/products/new")
           }
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
+          className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ui-btn-primary"
         >
           <Plus size={18} />
           Add Product
@@ -183,7 +183,7 @@ const Products = () => {
           <button
             type="button"
             onClick={fetchProducts}
-            className="text-sm font-medium text-red-700 hover:underline"
+            className="text-sm font-medium text-red-700 hover:underline ui-btn-danger"
           >
             Retry
           </button>
@@ -218,7 +218,7 @@ const Products = () => {
 
             <button
               type="submit"
-              className="ml-2 rounded-lg border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+              className="ml-2 rounded-lg border px-4 text-sm font-medium transition ui-btn-outline"
             >
               Search
             </button>
@@ -228,7 +228,7 @@ const Products = () => {
             type="button"
             onClick={fetchProducts}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition disabled:opacity-60 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -361,7 +361,7 @@ const Products = () => {
                               `/admin/products/${product.id}`
                             )
                           }
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
+                          className="rounded-lg p-2 transition ui-btn-outline"
                           title="View"
                         >
                           <Eye size={17} />
@@ -374,7 +374,7 @@ const Products = () => {
                               `/admin/products/${product.id}`
                             )
                           }
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-orange-50 hover:text-orange-600"
+                          className="rounded-lg p-2 transition ui-btn-outline"
                           title="Edit"
                         >
                           <Edit size={17} />
@@ -389,7 +389,7 @@ const Products = () => {
                             deleteLoading ===
                             product.id
                           }
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                          className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 ui-btn-danger"
                           title="Delete"
                         >
                           {deleteLoading ===
@@ -443,7 +443,7 @@ const Products = () => {
                       Math.max(current - 1, 1)
                     )
                   }
-                  className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   Previous
                 </button>
@@ -470,7 +470,7 @@ const Products = () => {
                       )
                     )
                   }
-                  className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   Next
                 </button>

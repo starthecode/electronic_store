@@ -186,7 +186,7 @@ const Checkout = () => {
 
           <Link
             to="/shop"
-            className="mt-7 inline-flex rounded-full bg-black px-6 py-3 text-xs text-white"
+            className="mt-7 inline-flex rounded-full px-6 py-3 text-xs ui-btn-primary"
           >
             Continue shopping
           </Link>
@@ -256,7 +256,7 @@ const Checkout = () => {
 
                   <Link
                     to="/account/addresses"
-                    className="mt-4 inline-flex rounded-full bg-black px-5 py-2.5 text-xs text-white"
+                    className="mt-4 inline-flex rounded-full px-5 py-2.5 text-xs ui-btn-primary"
                   >
                     Add address
                   </Link>
@@ -530,7 +530,7 @@ const Checkout = () => {
                 placingOrder ||
                 !selectedShipping
               }
-              className="w-full rounded-full bg-black py-3.5 text-xs font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-black/20"
+              className="w-full rounded-full py-3.5 text-xs font-medium transition disabled:cursor-not-allowed ui-btn-primary"
             >
               {placingOrder
                 ? "Placing order…"

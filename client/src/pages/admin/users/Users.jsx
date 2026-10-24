@@ -224,7 +224,7 @@ export default function Users() {
               loadUsers(true)
             }
             disabled={refreshing}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm disabled:opacity-50 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -244,7 +244,7 @@ export default function Users() {
                 "/admin/users/new"
               )
             }
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-gray-900 px-4 text-sm font-medium text-white shadow-sm hover:bg-black"
+            className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm ui-btn-primary"
           >
             <Plus size={17} />
             Add User
@@ -487,10 +487,10 @@ function ActionButton({
       type="button"
       title={title}
       onClick={onClick}
-      className={`flex h-9 w-9 items-center justify-center rounded-lg transition ${
+      className={`flex h-9 w-9 items-center justify-center rounded-lg transition${
         danger
-          ? "text-gray-400 hover:bg-red-50 hover:text-red-600"
-          : "text-gray-400 hover:bg-gray-100 hover:text-gray-900"
+          ? "text-gray-400 hover:bg-red-50 hover:text-red-600 ui-btn-danger"
+          : "text-gray-400 hover:bg-orange-50 hover:text-orange-700 ui-btn-outline"
       }`}
     >
       {children}
@@ -526,7 +526,7 @@ function Pagination({
               pagination.page - 1
             )
           }
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:opacity-40"
+          className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
         >
           Previous
         </button>
@@ -542,7 +542,7 @@ function Pagination({
               pagination.page + 1
             )
           }
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:opacity-40"
+          className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
         >
           Next
         </button>
@@ -594,7 +594,7 @@ function EmptyState({ onAdd }) {
       <button
         type="button"
         onClick={onAdd}
-        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white"
+        className="mt-5 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium ui-btn-primary"
       >
         <Plus size={15} />
         Add User

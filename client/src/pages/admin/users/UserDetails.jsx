@@ -236,7 +236,7 @@ export default function UserDetails() {
           onClick={() =>
             navigate("/admin/users")
           }
-          className="inline-flex items-center gap-2 text-sm text-gray-500"
+          className="inline-flex items-center gap-2 text-sm ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Users
@@ -257,7 +257,7 @@ export default function UserDetails() {
           onClick={() =>
             navigate("/admin/users")
           }
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Users
@@ -266,7 +266,7 @@ export default function UserDetails() {
         <button
           type="button"
           onClick={load}
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-medium ui-btn-outline"
         >
           <RefreshCw size={15} />
           Refresh
@@ -321,7 +321,7 @@ export default function UserDetails() {
                   `/admin/users/${user.id}/edit`
                 )
               }
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
             >
               <Edit size={15} />
               Edit
@@ -331,7 +331,7 @@ export default function UserDetails() {
               type="button"
               onClick={handleDelete}
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 ui-btn-danger"
             >
               <Trash2 size={15} />
               Delete

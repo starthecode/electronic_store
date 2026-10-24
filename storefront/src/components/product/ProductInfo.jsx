@@ -146,7 +146,7 @@ const ProductInfo = ({
                     )}
                     <button
                         type="submit"
-                        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ff8a00] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ed7d00] sm:min-w-56"
+                        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition sm:min-w-56 ui-btn-primary"
                     >
                         View at {product.marketplace?.name || "Amazon"}
                     </button>
@@ -322,15 +322,15 @@ const ProductInfo = ({
                                             value.id
                                         )
                                     }
-                                    className={`rounded-full border px-5 py-2.5 text-sm transition ${
+                                    className={(`rounded-full border px-5 py-2.5 text-sm transition${
                                         isSelected
-                                            ? "border-[#ff8a00] text-[#ff8a00]"
-                                            : "border-gray-200 text-gray-600 hover:border-gray-400"
-                                    } ${
+                                            ? ""
+                                            : ""
+                                    }${
                                         !variant
                                             ? "cursor-not-allowed opacity-30"
                                             : ""
-                                    }`}
+                                    }`) + "ui-btn-outline"}
                                 >
                                     {value.value}
                                 </button>
@@ -355,7 +355,7 @@ const ProductInfo = ({
                                 Math.max(1, value - 1)
                             )
                         }
-                        className="flex h-10 w-10 items-center justify-center disabled:opacity-30"
+                        className="flex h-10 w-10 items-center justify-center disabled:opacity-30 ui-btn-outline"
                     >
                         <Minus size={15} />
                     </button>
@@ -378,7 +378,7 @@ const ProductInfo = ({
                                 )
                             )
                         }
-                        className="flex h-10 w-10 items-center justify-center disabled:opacity-30"
+                        className="flex h-10 w-10 items-center justify-center disabled:opacity-30 ui-btn-outline"
                     >
                         <Plus size={15} />
                     </button>
@@ -396,7 +396,7 @@ const ProductInfo = ({
                             quantity
                         )
                     }
-                    className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-[#ff8a00] px-5 text-sm font-semibold text-white transition hover:bg-[#ed7d00] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+                    className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition disabled:cursor-not-allowed ui-btn-primary"
                 >
                     Buy Now
                 </button>
@@ -410,7 +410,7 @@ const ProductInfo = ({
                             quantity
                         )
                     }
-                    className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-[#111] px-5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+                    className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition disabled:cursor-not-allowed ui-btn-primary"
                 >
                     <ShoppingBag size={16} />
                     Add to Cart
@@ -418,7 +418,7 @@ const ProductInfo = ({
 
                 <button
                     type="button"
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#111] text-white transition hover:bg-black"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition ui-btn-primary"
                     aria-label="Add to wishlist"
                 >
                     <Heart size={18} />

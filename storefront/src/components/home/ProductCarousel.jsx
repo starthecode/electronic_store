@@ -50,7 +50,7 @@ const ProductCarousel = ({ title, products = [] }) => {
               type="button"
               onClick={() => scroll(-1)}
               aria-label={`Previous ${title}`}
-              className="absolute -left-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm"
+              className="absolute -left-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border shadow-sm ui-btn-outline"
             >
               <ChevronLeft size={14} />
             </button>
@@ -59,7 +59,7 @@ const ProductCarousel = ({ title, products = [] }) => {
               type="button"
               onClick={() => scroll(1)}
               aria-label={`Next ${title}`}
-              className="absolute -right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white shadow-sm"
+              className="absolute -right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full shadow-sm ui-btn-primary"
             >
               <ChevronRight size={14} />
             </button>

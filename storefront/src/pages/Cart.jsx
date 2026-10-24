@@ -41,7 +41,7 @@ const Cart = () => {
             </p>
             <Link
               to="/shop"
-              className="mt-7 inline-flex rounded-full bg-black px-6 py-3 text-xs font-medium text-white hover:bg-gray-800"
+              className="mt-7 inline-flex rounded-full px-6 py-3 text-xs font-medium ui-btn-primary"
             >
               Explore products
             </Link>
@@ -79,7 +79,7 @@ const Cart = () => {
               >
                 <Link
                   to={`/products/${item.productSlug}`}
-                  className="flex h-28 w-28 shrink-0 items-center justify-center rounded-xl bg-[#f7f7f7] p-3 sm:h-32 sm:w-32"
+                  className="flex h-28 w-28 shrink-0 items-center justify-center rounded-xl p-3 sm:h-32 sm:w-32 ui-btn-outline"
                 >
                   <img
                     src={item.image}
@@ -113,7 +113,7 @@ const Cart = () => {
                     <button
                       type="button"
                       onClick={() => removeFromCart(item.variantId)}
-                      className="text-gray-400 hover:text-black"
+                      className="ui-btn-outline"
                       aria-label={`Remove ${item.productName}`}
                     >
                       <Trash2 size={16} />
@@ -127,7 +127,7 @@ const Cart = () => {
                         onClick={() =>
                           updateQuantity(item.variantId, item.quantity - 1)
                         }
-                        className="flex h-9 w-9 items-center justify-center text-gray-500 hover:text-black"
+                        className="flex h-9 w-9 items-center justify-center ui-btn-outline"
                         aria-label="Decrease quantity"
                       >
                         <Minus size={13} />
@@ -143,7 +143,7 @@ const Cart = () => {
                           updateQuantity(item.variantId, item.quantity + 1)
                         }
                         disabled={item.quantity >= 99}
-                        className="flex h-9 w-9 items-center justify-center text-gray-500 hover:text-black disabled:opacity-30"
+                        className="flex h-9 w-9 items-center justify-center disabled:opacity-30 ui-btn-outline"
                         aria-label="Increase quantity"
                       >
                         <Plus size={13} />
@@ -184,7 +184,7 @@ const Cart = () => {
             <button
               type="button"
               onClick={() => navigate("/checkout")}
-              className="w-full rounded-full bg-black py-3.5 text-xs font-medium text-white transition hover:bg-gray-800"
+              className="w-full rounded-full py-3.5 text-xs font-medium transition ui-btn-primary"
             >
               Proceed to checkout
             </button>

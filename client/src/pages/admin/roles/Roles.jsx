@@ -139,7 +139,7 @@ const Roles = () => {
               type="button"
               onClick={loadRoles}
               disabled={loading}
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm disabled:opacity-50 ui-btn-outline"
             >
               <RefreshCw
                 size={16}
@@ -159,7 +159,7 @@ const Roles = () => {
                   "/admin/roles/create"
                 )
               }
-              className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-gray-800"
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm ui-btn-primary"
             >
               <Plus size={17} />
               Add Role
@@ -219,7 +219,7 @@ const Roles = () => {
                     "/admin/roles/create"
                   )
                 }
-                className="mt-5 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white"
+                className="mt-5 rounded-xl px-4 py-2.5 text-sm font-medium ui-btn-primary"
               >
                 Create Role
               </button>
@@ -349,7 +349,7 @@ const Roles = () => {
                                     `/admin/roles/${role.id}`
                                   )
                                 }
-                                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                                className="rounded-lg p-2 ui-btn-outline"
                               >
                                 <Eye
                                   size={17}
@@ -364,7 +364,7 @@ const Roles = () => {
                                     `/admin/roles/${role.id}/edit`
                                   )
                                 }
-                                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                                className="rounded-lg p-2 ui-btn-outline"
                               >
                                 <Pencil
                                   size={17}
@@ -383,7 +383,7 @@ const Roles = () => {
                                     role
                                   )
                                 }
-                                className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                                className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40 ui-btn-danger"
                               >
                                 <Trash2
                                   size={17}

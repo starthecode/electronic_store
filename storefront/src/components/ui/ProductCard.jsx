@@ -118,7 +118,7 @@ const ProductCard = ({ product }) => {
         {isAffiliateProduct ? (
           <Link
             to={productDetailsUrl}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800"
+            className="flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[10px] font-medium transition ui-btn-primary"
           >
             View Product
             <ArrowUpRight size={13} />
@@ -128,7 +128,7 @@ const ProductCard = ({ product }) => {
             type="button"
             onClick={handleAddToCart}
             disabled={!availableVariant}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2.5 text-[10px] font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/35"
+            className="flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[10px] font-medium transition disabled:cursor-not-allowed ui-btn-primary"
           >
             <ShoppingBag size={13} strokeWidth={1.8} />
             {added ? "Added to cart" : availableVariant ? "Add to cart" : "Out of stock"}

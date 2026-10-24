@@ -248,7 +248,7 @@ const ProductDetails = () => {
                     onClick={() =>
                         navigate("/admin/products")
                     }
-                    className="rounded-lg border border-gray-200 bg-white p-2 text-gray-600 transition hover:bg-gray-50"
+                    className="rounded-lg border p-2 transition ui-btn-outline"
                 >
                     <ArrowLeft size={19} />
                 </button>
@@ -342,7 +342,7 @@ const ProductDetails = () => {
                                 <button
                                     type="button"
                                     onClick={generateSlug}
-                                    className="text-xs font-medium text-orange-500 hover:text-orange-600"
+                                    className="text-xs font-medium ui-btn-outline"
                                 >
                                     Generate
                                 </button>
@@ -504,7 +504,7 @@ const ProductDetails = () => {
                             navigate("/admin/products")
                         }
                         disabled={saving}
-                        className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+                        className="rounded-lg border px-5 py-2.5 text-sm font-medium transition disabled:opacity-50 ui-btn-outline"
                     >
                         Cancel
                     </button>
@@ -512,7 +512,7 @@ const ProductDetails = () => {
                     <button
                         type="submit"
                         disabled={saving}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-primary"
                     >
                         {saving ? (
                             <>

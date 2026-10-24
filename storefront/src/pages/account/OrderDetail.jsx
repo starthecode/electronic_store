@@ -503,7 +503,7 @@ const OrderDetail = () => {
                     <button
                         type="button"
                         onClick={() => navigate("/account/orders")}
-                        className="text-sm text-gray-500 hover:text-black"
+                        className="text-sm ui-btn-outline"
                     >
                         ← My orders
                     </button>
@@ -818,7 +818,7 @@ const OrderDetail = () => {
                                         type="button"
                                         disabled={actionLoading}
                                         onClick={handleCancel}
-                                        className="mt-5 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium transition hover:border-black hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="mt-5 w-full rounded-xl border px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ui-btn-outline"
                                     >
                                         {actionLoading
                                             ? "Please wait..."
@@ -831,7 +831,7 @@ const OrderDetail = () => {
                                         type="button"
                                         disabled={actionLoading}
                                         onClick={handleReturn}
-                                        className="mt-3 w-full rounded-xl bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="mt-3 w-full rounded-xl px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ui-btn-primary"
                                     >
                                         {actionLoading
                                             ? "Please wait..."

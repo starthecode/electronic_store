@@ -605,7 +605,7 @@ const Payments = () => {
           type="button"
           onClick={handleRefresh}
           disabled={refreshing}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
         >
           <RefreshCw
             size={16}
@@ -642,7 +642,7 @@ const Payments = () => {
             onClick={() =>
               fetchPayments(true)
             }
-            className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100"
+            className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 ui-btn-danger"
           >
             Retry
           </button>
@@ -725,7 +725,7 @@ const Payments = () => {
                     setSearch("");
                     setPage(1);
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 ui-btn-outline"
                 >
                   <X size={15} />
                 </button>
@@ -810,7 +810,7 @@ const Payments = () => {
               onClick={() =>
                 setMobileFiltersOpen(true)
               }
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 lg:hidden"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium lg:hidden ui-btn-outline"
             >
               <Filter size={16} />
               Filters
@@ -852,7 +852,7 @@ const Payments = () => {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="ml-1 text-xs font-medium text-slate-600 underline underline-offset-2 hover:text-slate-900"
+                className="ml-1 text-xs font-medium underline underline-offset-2 ui-btn-outline"
               >
                 Clear all
               </button>
@@ -929,7 +929,7 @@ const Payments = () => {
                         <button
                           type="button"
                           onClick={resetFilters}
-                          className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-xs font-medium text-white hover:bg-slate-800"
+                          className="mt-4 rounded-lg px-4 py-2 text-xs font-medium ui-btn-outline"
                         >
                           Clear filters
                         </button>
@@ -1054,7 +1054,7 @@ const Payments = () => {
                         <Link
                           to={`/admin/payments/${payment.id}`}
                           title="View payment"
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ui-btn-outline"
                         >
                           <Eye size={16} />
                         </Link>
@@ -1096,7 +1096,7 @@ const Payments = () => {
                         goToPage(page - 1)
                       }
                       disabled={page <= 1}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                     >
                       <ChevronLeft size={16} />
                     </button>
@@ -1119,9 +1119,9 @@ const Payments = () => {
                                 pageNumber
                               )
                             }
-                            className={`inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-sm font-medium ${pageNumber === page
-                              ? "bg-slate-900 text-white"
-                              : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                            className={`inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-sm font-medium${pageNumber === page
+                              ? "ui-btn-primary"
+                              : "border ui-btn-outline"
                               }`}
                           >
                             {pageNumber}
@@ -1138,7 +1138,7 @@ const Payments = () => {
                         page >=
                         pagination.totalPages
                       }
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                     >
                       <ChevronRight size={16} />
                     </button>
@@ -1157,7 +1157,7 @@ const Payments = () => {
             onClick={() =>
               setMobileFiltersOpen(false)
             }
-            className="absolute inset-0 bg-slate-900/40"
+            className="absolute inset-0 ui-btn-outline"
           />
 
           <div className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white p-5 shadow-2xl">
@@ -1179,7 +1179,7 @@ const Payments = () => {
                     false
                   )
                 }
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600"
+                className="flex h-9 w-9 items-center justify-center rounded-lg ui-btn-outline"
               >
                 <X size={18} />
               </button>
@@ -1278,7 +1278,7 @@ const Payments = () => {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="h-11 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700"
+                className="h-11 flex-1 rounded-xl border text-sm font-medium ui-btn-outline"
               >
                 Clear
               </button>
@@ -1290,7 +1290,7 @@ const Payments = () => {
                     false
                   )
                 }
-                className="h-11 flex-1 rounded-xl bg-slate-900 text-sm font-medium text-white"
+                className="h-11 flex-1 rounded-xl text-sm font-medium ui-btn-outline"
               >
                 Apply
               </button>

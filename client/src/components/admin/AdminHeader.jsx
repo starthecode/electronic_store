@@ -42,7 +42,7 @@ const AdminHeader = ({ onMenuClick }) => {
       <button
         type="button"
         onClick={onMenuClick}
-        className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
+        className="rounded-lg p-2 lg:hidden ui-btn-outline"
       >
         <Menu size={22} />
       </button>
@@ -50,7 +50,7 @@ const AdminHeader = ({ onMenuClick }) => {
       <div className="ml-auto flex items-center gap-2">
         <button
           type="button"
-          className="rounded-lg p-2.5 text-gray-600 hover:bg-gray-100"
+          className="rounded-lg p-2.5 ui-btn-outline"
         >
           <Bell size={20} />
         </button>
@@ -75,7 +75,7 @@ const AdminHeader = ({ onMenuClick }) => {
             type="button"
             onClick={handleLogout}
             disabled={logoutLoading}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+            className="rounded-lg p-2 disabled:opacity-50 ui-btn-outline"
             title="Logout"
           >
             <LogOut size={18} />

@@ -53,7 +53,7 @@ const PrivacyContent = () => {
     <button
       type="button"
       onClick={resetConsent}
-      className="mt-6 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium"
+      className="mt-6 rounded-full border px-4 py-2 text-sm font-medium ui-btn-outline"
     >
       Change analytics preference
     </button>

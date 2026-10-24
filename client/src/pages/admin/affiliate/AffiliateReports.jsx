@@ -80,7 +80,7 @@ export default function AffiliateReports() {
     <div className="space-y-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div><h1 className="text-2xl font-semibold text-gray-900">Affiliate Reports</h1><p className="mt-1 text-sm text-gray-500">Monitor affiliate traffic and marketplace performance.</p></div>
-        <button onClick={() => { loadSummary(); loadProducts(); }} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium shadow-sm hover:bg-gray-50"><RefreshCw size={16}/> Refresh</button>
+        <button onClick={() => { loadSummary(); loadProducts(); }} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm ui-btn-outline"><RefreshCw size={16}/> Refresh</button>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -132,7 +132,7 @@ export default function AffiliateReports() {
                 <tr><td colSpan="7" className="px-5 py-10 text-center text-gray-500">No affiliate products found.</td></tr>}
             </tbody>
           </table></div>
-          {pagination && pagination.totalPages > 1 && <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4"><p className="text-sm text-gray-500">Page {pagination.page} of {pagination.totalPages}</p><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40"><ChevronLeft size={16}/> Previous</button><button disabled={page >= pagination.totalPages} onClick={() => setPage(p => p + 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40">Next <ChevronRight size={16}/></button></div></div>}
+          {pagination && pagination.totalPages > 1 && <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4"><p className="text-sm text-gray-500">Page {pagination.page} of {pagination.totalPages}</p><div className="flex gap-2"><button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40 ui-btn-outline"><ChevronLeft size={16}/> Previous</button><button disabled={page >= pagination.totalPages} onClick={() => setPage(p => p + 1)} className="inline-flex h-9 items-center gap-1 rounded-lg border px-3 text-sm disabled:opacity-40 ui-btn-outline">Next <ChevronRight size={16}/></button></div></div>}
         </div>
       </div>
     </div>

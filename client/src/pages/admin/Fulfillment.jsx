@@ -477,7 +477,7 @@ const Fulfillment = () => {
             type="button"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:opacity-60 ui-btn-outline"
           >
             <RefreshCw
               size={17}
@@ -808,7 +808,7 @@ const Fulfillment = () => {
                         pagination.page - 1
                       )
                     }
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
+                    className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
                   >
                     Previous
                   </button>
@@ -820,11 +820,11 @@ const Fulfillment = () => {
                       onClick={() =>
                         handlePageChange(page)
                       }
-                      className={`h-9 min-w-9 rounded-lg px-2 text-sm ${
+                      className={`h-9 min-w-9 rounded-lg px-2 text-sm${
                         page ===
                         pagination.page
-                          ? "bg-slate-900 text-white"
-                          : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                          ? "ui-btn-primary"
+                          : "border ui-btn-outline"
                       }`}
                     >
                       {page}
@@ -842,7 +842,7 @@ const Fulfillment = () => {
                         pagination.page + 1
                       )
                     }
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm disabled:opacity-40"
+                    className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
                   >
                     Next
                   </button>

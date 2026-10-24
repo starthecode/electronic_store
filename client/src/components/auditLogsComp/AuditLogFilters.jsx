@@ -129,7 +129,7 @@ const AuditLogFilters = ({
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+          className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition ui-btn-outline"
         >
           <RotateCcw size={14} />
           Reset

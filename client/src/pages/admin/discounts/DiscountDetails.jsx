@@ -150,7 +150,7 @@ export default function DiscountDetails() {
           onClick={() =>
             navigate("/admin/discounts")
           }
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Discounts
@@ -164,7 +164,7 @@ export default function DiscountDetails() {
           <button
             type="button"
             onClick={() => loadDiscount()}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium ui-btn-primary"
           >
             <RefreshCw size={15} />
             Try Again
@@ -199,7 +199,7 @@ export default function DiscountDetails() {
             onClick={() =>
               navigate("/admin/discounts")
             }
-            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-gray-900"
+            className="mb-4 inline-flex items-center gap-2 text-sm font-medium transition ui-btn-outline"
           >
             <ArrowLeft size={16} />
             Back to Discounts
@@ -247,7 +247,7 @@ export default function DiscountDetails() {
               loadDiscount(true)
             }
             disabled={refreshing}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm disabled:opacity-50 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -267,7 +267,7 @@ export default function DiscountDetails() {
                 `/admin/discounts/${id}/edit`
               )
             }
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-gray-900 px-4 text-sm font-medium text-white shadow-sm hover:bg-black"
+            className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm ui-btn-primary"
           >
             <Edit size={16} />
             Edit Discount
@@ -609,8 +609,8 @@ function TabButton({
       onClick={onClick}
       className={`relative px-4 py-4 text-sm font-medium transition ${
         active
-          ? "text-gray-900"
-          : "text-gray-500 hover:text-gray-900"
+          ? "text-orange-600"
+          : "text-gray-500 hover:text-orange-600"
       }`}
     >
       <span className="flex items-center gap-2">
@@ -630,7 +630,7 @@ function TabButton({
       </span>
 
       {active && (
-        <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gray-900" />
+        <span         className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-orange-500" />
       )}
     </button>
   );

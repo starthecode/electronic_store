@@ -138,7 +138,7 @@ const RoleForm = () => {
           onClick={() =>
             navigate("/admin/roles")
           }
-          className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
+          className="mb-5 inline-flex items-center gap-2 text-sm ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Roles
@@ -226,7 +226,7 @@ const RoleForm = () => {
               onClick={() =>
                 navigate("/admin/roles")
               }
-              className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-xl border px-5 py-2.5 text-sm font-medium ui-btn-outline"
             >
               Cancel
             </button>
@@ -234,7 +234,7 @@ const RoleForm = () => {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium disabled:opacity-50 ui-btn-primary"
             >
               <Save size={16} />
 

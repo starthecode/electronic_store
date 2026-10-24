@@ -261,7 +261,7 @@ const Brands = () => {
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
+          className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ui-btn-primary"
         >
           <Plus size={17} />
           Add Brand
@@ -276,7 +276,7 @@ const Brands = () => {
           <button
             type="button"
             onClick={() => setError("")}
-          >
+           className="ui-btn-outline">
             <X size={16} />
           </button>
         </div>
@@ -330,7 +330,7 @@ const Brands = () => {
             type="button"
             onClick={fetchBrands}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -464,7 +464,7 @@ const Brands = () => {
                                 brand
                               )
                             }
-                            className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+                            className="rounded-lg p-2 transition ui-btn-outline"
                             title="Edit"
                           >
                             <Pencil size={15} />
@@ -479,7 +479,7 @@ const Brands = () => {
                               deleting ===
                               brand.id
                             }
-                            className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                            className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 ui-btn-danger"
                             title="Delete"
                           >
                             {deleting ===
@@ -525,7 +525,7 @@ const Brands = () => {
                         current - 1
                     )
                   }
-                  className="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border p-2 disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronLeft size={15} />
                 </button>
@@ -547,7 +547,7 @@ const Brands = () => {
                         current + 1
                     )
                   }
-                  className="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border p-2 disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   <ChevronRight size={15} />
                 </button>
@@ -578,7 +578,7 @@ const Brands = () => {
                 type="button"
                 onClick={handleCloseModal}
                 disabled={saving}
-                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-50"
+                className="rounded-lg p-1.5 disabled:opacity-50 ui-btn-outline"
               >
                 <X size={18} />
               </button>
@@ -707,7 +707,7 @@ const Brands = () => {
                   type="button"
                   onClick={handleCloseModal}
                   disabled={saving}
-                  className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                  className="rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-50 ui-btn-outline"
                 >
                   Cancel
                 </button>
@@ -718,7 +718,7 @@ const Brands = () => {
                     saving ||
                     !form.name.trim()
                   }
-                  className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 ui-btn-primary"
                 >
                   {saving && (
                     <LoaderCircle

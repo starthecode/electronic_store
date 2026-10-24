@@ -25,7 +25,7 @@ const Newsletter = () => {
 
           <button
             type="submit"
-            className="bg-black px-4 text-[9px] font-medium text-white"
+            className="px-4 text-[9px] font-medium ui-btn-primary"
           >
             Subscribe
           </button>

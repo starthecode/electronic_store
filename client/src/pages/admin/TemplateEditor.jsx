@@ -362,7 +362,7 @@ export default function TemplateEditor() {
         <button
           type="button"
           onClick={beginCreate}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium ui-btn-primary"
         >
           <Plus size={17} />
           Add {tab === "slides" ? "slide" : "testimonial"}
@@ -496,7 +496,7 @@ export default function TemplateEditor() {
                     onClick={() => move(index, -1)}
                     disabled={index === 0}
                     aria-label="Move up"
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                    className="rounded-lg border p-2 disabled:opacity-40 ui-btn-outline"
                   >
                     <ArrowUp size={16} />
                   </button>
@@ -505,7 +505,7 @@ export default function TemplateEditor() {
                     onClick={() => move(index, 1)}
                     disabled={index === items.length - 1}
                     aria-label="Move down"
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                    className="rounded-lg border p-2 disabled:opacity-40 ui-btn-outline"
                   >
                     <ArrowDown size={16} />
                   </button>
@@ -513,7 +513,7 @@ export default function TemplateEditor() {
                 <button
                   type="button"
                   onClick={() => toggleActive(item)}
-                  className="min-h-9 rounded-lg border border-gray-200 px-3 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                  className="min-h-9 rounded-lg border px-3 text-xs font-medium ui-btn-outline"
                 >
                   {item.isActive ? "Deactivate" : "Activate"}
                 </button>
@@ -521,7 +521,7 @@ export default function TemplateEditor() {
                   type="button"
                   onClick={() => beginEdit(item)}
                   aria-label="Edit"
-                  className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50"
+                  className="rounded-lg border p-2 ui-btn-outline"
                 >
                   <Pencil size={16} />
                 </button>
@@ -529,7 +529,7 @@ export default function TemplateEditor() {
                   type="button"
                   onClick={() => remove(item)}
                   aria-label="Delete"
-                  className="rounded-lg border border-red-100 p-2 text-red-600 hover:bg-red-50"
+                  className="rounded-lg border border-red-100 p-2 text-red-600 hover:bg-red-50 ui-btn-danger"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -560,7 +560,7 @@ export default function TemplateEditor() {
                 type="button"
                 onClick={() => setEditor(null)}
                 aria-label="Close editor"
-                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+                className="rounded-lg p-2 ui-btn-outline"
               >
                 <X size={18} />
               </button>
@@ -684,14 +684,14 @@ export default function TemplateEditor() {
                 <button
                   type="button"
                   onClick={() => setEditor(null)}
-                  className="min-h-10 rounded-xl border border-gray-200 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="min-h-10 rounded-xl border px-4 text-sm font-medium ui-btn-outline"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium disabled:opacity-60 ui-btn-primary"
                 >
                   <Save size={16} />
                   {saving ? "Saving..." : "Save"}

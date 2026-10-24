@@ -131,7 +131,7 @@ const Customers = () => {
               loadCustomers(pagination.page)
             }
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm disabled:opacity-50 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -303,7 +303,7 @@ const Customers = () => {
                         <td className="px-6 py-5 text-right">
                           <Link
                             to={`/admin/customers/${customer.id}`}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg ui-btn-outline"
                             title="View customer"
                           >
                             <Eye size={17} />
@@ -340,7 +340,7 @@ const Customers = () => {
                           pagination.page - 1
                         )
                       }
-                      className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+                      className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                     >
                       Previous
                     </button>
@@ -361,7 +361,7 @@ const Customers = () => {
                           pagination.page + 1
                         )
                       }
-                      className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+                      className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                     >
                       Next
                     </button>

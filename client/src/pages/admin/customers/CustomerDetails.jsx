@@ -236,7 +236,7 @@ const CustomerDetails = () => {
           <button
             type="button"
             onClick={loadData}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm ui-btn-outline"
           >
             <RefreshCw size={16} />
             Refresh

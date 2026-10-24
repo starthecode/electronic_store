@@ -225,7 +225,7 @@ const ProductVariants = ({
                             type="button"
                             onClick={fetchVariants}
                             disabled={loading}
-                            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition disabled:opacity-50 ui-btn-outline"
                         >
                             <RefreshCw
                                 size={16}
@@ -241,7 +241,7 @@ const ProductVariants = ({
                         <button
                             type="button"
                             onClick={openCreateModal}
-                            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition ui-btn-primary"
                         >
                             <Plus size={17} />
                             Add Variant
@@ -375,7 +375,7 @@ const ProductVariants = ({
                                                     onClick={() =>
                                                         openAttributesModal(variant)
                                                     }
-                                                    className="rounded-lg p-2 text-gray-500 transition hover:bg-orange-50 hover:text-orange-600"
+                                                    className="rounded-lg p-2 transition ui-btn-outline"
                                                     title="Attributes"
                                                 >
                                                     <Tags size={17} />
@@ -392,7 +392,7 @@ const ProductVariants = ({
                                                         deleteLoading ===
                                                         variant.id
                                                     }
-                                                    className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                                                    className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 ui-btn-danger"
                                                     title="Delete variant"
                                                 >
                                                     {deleteLoading ===
@@ -462,7 +462,7 @@ const ProductVariants = ({
                                 <button
                                     type="button"
                                     onClick={closeAttributesModal}
-                                    className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                                    className="rounded-lg p-2 transition ui-btn-outline"
                                 >
                                     <X size={19} />
                                 </button>

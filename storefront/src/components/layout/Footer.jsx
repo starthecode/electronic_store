@@ -65,7 +65,7 @@ const Footer = () => {
       <div className="flex items-center justify-between pt-5 text-[9px] text-gray-400">
         <span>© 2026 Gearadge. All rights reserved.</span>
 
-        <button className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 text-black">
+        <button className="flex h-7 w-7 items-center justify-center rounded-full border ui-btn-outline">
           ↑
         </button>
       </div>
@@ -104,7 +104,7 @@ const FooterColumn = ({ title, links }) => (
 );
 
 const SocialIcon = ({ children }) => (
-  <button className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300">
+  <button className="flex h-7 w-7 items-center justify-center rounded-full border ui-btn-outline">
     {children}
   </button>
 );

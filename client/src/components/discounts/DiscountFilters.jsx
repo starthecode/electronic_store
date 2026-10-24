@@ -162,7 +162,7 @@ export default function DiscountFilters({
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-3 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-3 text-sm font-medium transition ui-btn-outline"
           >
             <X size={16} />
             Clear

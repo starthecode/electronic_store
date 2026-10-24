@@ -80,7 +80,7 @@ const RelatedProducts = ({ products = [] }) => {
             <div className="mt-10 flex justify-center">
                 <Link
                     to="/shop"
-                    className="rounded-full bg-[#111] px-7 py-3 text-sm font-medium text-white transition hover:bg-black"
+                    className="rounded-full px-7 py-3 text-sm font-medium transition ui-btn-primary"
                 >
                     Go to Shop
                 </Link>

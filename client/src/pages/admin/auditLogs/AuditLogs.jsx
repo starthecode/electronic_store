@@ -186,7 +186,7 @@ const AuditLogs = () => {
               fetchLogs(pagination.page)
             }
             disabled={loading}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -373,7 +373,7 @@ const AuditLogs = () => {
                               `/admin/audit-logs/${log.id}`
                             )
                           }
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-900"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition ui-btn-outline"
                           title="View audit log"
                         >
                           <Eye size={17} />
@@ -412,7 +412,7 @@ const AuditLogs = () => {
                       pagination.page - 1
                     )
                   }
-                  className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   Previous
                 </button>
@@ -436,7 +436,7 @@ const AuditLogs = () => {
                       pagination.page + 1
                     )
                   }
-                  className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded-lg border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                 >
                   Next
                 </button>

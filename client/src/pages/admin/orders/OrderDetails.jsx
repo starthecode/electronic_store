@@ -665,7 +665,7 @@ const OrderDetails = () => {
         <button
           type="button"
           onClick={() => navigate("/admin/orders")}
-          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+          className="mb-5 inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Orders
@@ -691,7 +691,7 @@ const OrderDetails = () => {
               <button
                 type="button"
                 onClick={() => fetchOrder()}
-                className="mt-4 rounded-lg bg-red-700 px-4 py-2 text-xs font-medium text-white hover:bg-red-800"
+                className="mt-4 rounded-lg bg-red-700 px-4 py-2 text-xs font-medium text-white hover:bg-red-800 ui-btn-danger"
               >
                 Try again
               </button>
@@ -713,7 +713,7 @@ const OrderDetails = () => {
               onClick={() =>
                 navigate("/admin/orders")
               }
-              className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+              className="mb-3 inline-flex items-center gap-2 text-sm font-medium transition ui-btn-outline"
             >
               <ArrowLeft size={16} />
               Back to Orders
@@ -743,7 +743,7 @@ const OrderDetails = () => {
               fetchHistory();
             }}
             disabled={refreshing}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
           >
             <RefreshCw
               size={16}
@@ -777,7 +777,7 @@ const OrderDetails = () => {
           <button
             type="button"
             onClick={() => setActionError("")}
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 hover:text-red-700 ui-btn-danger"
           >
             <X size={17} />
           </button>
@@ -831,7 +831,7 @@ const OrderDetails = () => {
                         )
                       }
                       disabled={updating}
-                      className="inline-flex h-10 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex h-10 items-center justify-between gap-3 rounded-xl border px-4 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
                     >
                       Change status
                       <ChevronDown size={15} />
@@ -849,7 +849,7 @@ const OrderDetails = () => {
                                   nextStatus
                                 )
                               }
-                              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
+                              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ui-btn-outline"
                             >
                               <span>
                                 {formatStatus(
@@ -1165,7 +1165,7 @@ const OrderDetails = () => {
               {order.user?.email && (
                 <a
                   href={`mailto:${order.user.email}`}
-                  className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-100"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ui-btn-outline"
                 >
                   <Mail
                     size={15}
@@ -1181,7 +1181,7 @@ const OrderDetails = () => {
               {order.user?.phone && (
                 <a
                   href={`tel:${order.user.phone}`}
-                  className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-100"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ui-btn-outline"
                 >
                   <Phone
                     size={15}
@@ -1265,7 +1265,7 @@ const OrderDetails = () => {
                   )
                 }
                 disabled={updating}
-                className="flex h-10 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex h-10 w-full items-center justify-between rounded-xl border px-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
               >
                 Change payment status
                 <ChevronDown size={15} />
@@ -1287,7 +1287,7 @@ const OrderDetails = () => {
                             paymentStatus
                           )
                         }
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                       >
                         <span>
                           {formatStatus(
@@ -1335,7 +1335,7 @@ const OrderDetails = () => {
                   )
                 }
                 disabled={updating}
-                className="flex h-10 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex h-10 w-full items-center justify-between rounded-xl border px-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
               >
                 Change fulfillment status
                 <ChevronDown size={15} />
@@ -1357,7 +1357,7 @@ const OrderDetails = () => {
                             fulfillmentStatus
                           )
                         }
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-40 ui-btn-outline"
                       >
                         <span>
                           {formatStatus(
@@ -1477,7 +1477,7 @@ const OrderDetails = () => {
             onClick={() =>
               !updating && setConfirmAction(null)
             }
-            className="absolute inset-0 bg-slate-950/40"
+            className="absolute inset-0 ui-btn-outline"
           />
 
           <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
@@ -1512,7 +1512,7 @@ const OrderDetails = () => {
                 onClick={() =>
                   setConfirmAction(null)
                 }
-                className="h-10 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="h-10 flex-1 rounded-xl border text-sm font-medium disabled:opacity-50 ui-btn-outline"
               >
                 Cancel
               </button>
@@ -1521,7 +1521,7 @@ const OrderDetails = () => {
                 type="button"
                 disabled={updating}
                 onClick={executeConfirmedAction}
-                className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ui-btn-outline"
               >
                 {updating && (
                   <Loader2

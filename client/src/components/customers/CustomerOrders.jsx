@@ -168,7 +168,7 @@ const CustomerOrders = ({
               <td className="px-4 py-4 text-right">
                 <Link
                   to={`/admin/orders/${order.id}`}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg ui-btn-outline"
                   title="View order"
                 >
                   <Eye size={16} />

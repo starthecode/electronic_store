@@ -174,7 +174,7 @@ const Settings = () => {
                 )
               }
               disabled={loading}
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm disabled:opacity-50 ui-btn-outline"
             >
               <RefreshCw
                 size={16}
@@ -194,7 +194,7 @@ const Settings = () => {
                   "/admin/settings/create"
                 )
               }
-              className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-gray-800"
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm ui-btn-primary"
             >
               <Plus size={17} />
               Add Setting
@@ -390,7 +390,7 @@ const Settings = () => {
                                   )}`
                                 )
                               }
-                              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                              className="rounded-lg p-2 ui-btn-outline"
                             >
                               <Eye
                                 size={17}
@@ -407,7 +407,7 @@ const Settings = () => {
                                   )}/edit`
                                 )
                               }
-                              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                              className="rounded-lg p-2 ui-btn-outline"
                             >
                               <Pencil
                                 size={17}
@@ -426,7 +426,7 @@ const Settings = () => {
                                   setting
                                 )
                               }
-                              className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                              className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40 ui-btn-danger"
                             >
                               <Trash2
                                 size={17}
@@ -464,7 +464,7 @@ const Settings = () => {
                           1
                       )
                     }
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600 disabled:opacity-40"
+                    className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
                   >
                     Previous
                   </button>
@@ -486,7 +486,7 @@ const Settings = () => {
                           1
                       )
                     }
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600 disabled:opacity-40"
+                    className="rounded-lg border px-3 py-2 text-sm disabled:opacity-40 ui-btn-outline"
                   >
                     Next
                   </button>

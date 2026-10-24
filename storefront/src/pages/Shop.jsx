@@ -464,7 +464,7 @@ const Shop = () => {
                 <button
                     type="button"
                     onClick={clearFilters}
-                    className="w-full rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+                    className="w-full rounded-lg px-4 py-3 text-sm font-medium transition ui-btn-primary"
                 >
                     Clear all filters
                 </button>
@@ -523,7 +523,7 @@ const Shop = () => {
                                 <button
                                     type="button"
                                     onClick={() => handleSearchChange("")}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 ui-btn-outline"
                                 >
                                     <X size={16} />
                                 </button>
@@ -533,7 +533,7 @@ const Shop = () => {
                         <button
                             type="button"
                             onClick={() => setMobileFiltersOpen(true)}
-                            className="flex h-12 shrink-0 items-center gap-2 rounded-full border border-gray-200 px-4 text-sm lg:hidden"
+                            className="flex h-12 shrink-0 items-center gap-2 rounded-full border px-4 text-sm lg:hidden ui-btn-outline"
                         >
                             <Filter size={16} />
                             Filters
@@ -574,7 +574,7 @@ const Shop = () => {
                                 {search && (
                                     <button
                                         onClick={() => updateFilter("search", "")}
-                                        className="flex items-center gap-2 rounded-full bg-[#f5f5f5] px-3 py-2 text-xs"
+                                        className="flex items-center gap-2 rounded-full px-3 py-2 text-xs ui-btn-outline"
                                     >
                                         Search: {search}
                                         <X size={13} />
@@ -584,7 +584,7 @@ const Shop = () => {
                                 {selectedCategory && (
                                     <button
                                         onClick={() => updateFilter("categoryId", "")}
-                                        className="flex items-center gap-2 rounded-full bg-[#f5f5f5] px-3 py-2 text-xs"
+                                        className="flex items-center gap-2 rounded-full px-3 py-2 text-xs ui-btn-outline"
                                     >
                                         {selectedCategory.name}
                                         <X size={13} />
@@ -594,7 +594,7 @@ const Shop = () => {
                                 {selectedBrand && (
                                     <button
                                         onClick={() => updateFilter("brandId", "")}
-                                        className="flex items-center gap-2 rounded-full bg-[#f5f5f5] px-3 py-2 text-xs"
+                                        className="flex items-center gap-2 rounded-full px-3 py-2 text-xs ui-btn-outline"
                                     >
                                         {selectedBrand.name}
                                         <X size={13} />
@@ -615,7 +615,7 @@ const Shop = () => {
                                             setMinPriceInput("");
                                             setMaxPriceInput("");
                                         }}
-                                        className="flex items-center gap-2 rounded-full bg-[#f5f5f5] px-3 py-2 text-xs"
+                                        className="flex items-center gap-2 rounded-full px-3 py-2 text-xs ui-btn-outline"
                                     >
                                         ₹{minPrice || "0"} – ₹{maxPrice || "∞"}
                                         <X size={13} />
@@ -646,7 +646,7 @@ const Shop = () => {
 
                                 <button
                                     onClick={() => window.location.reload()}
-                                    className="mt-6 rounded-full bg-black px-5 py-3 text-sm font-medium text-white"
+                                    className="mt-6 rounded-full px-5 py-3 text-sm font-medium ui-btn-primary"
                                 >
                                     Try again
                                 </button>
@@ -666,7 +666,7 @@ const Shop = () => {
 
                                 <button
                                     onClick={clearFilters}
-                                    className="mt-6 rounded-full bg-black px-5 py-3 text-sm font-medium text-white"
+                                    className="mt-6 rounded-full px-5 py-3 text-sm font-medium ui-btn-primary"
                                 >
                                     Clear filters
                                 </button>
@@ -692,7 +692,7 @@ const Shop = () => {
                                             type="button"
                                             disabled={page <= 1}
                                             onClick={() => goToPage(page - 1)}
-                                            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 disabled:cursor-not-allowed disabled:opacity-30"
+                                            className="flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-30 ui-btn-outline"
                                         >
                                             <ChevronLeft size={17} />
                                         </button>
@@ -721,9 +721,9 @@ const Shop = () => {
                                                         <button
                                                             type="button"
                                                             onClick={() => goToPage(item)}
-                                                            className={`h-10 min-w-10 rounded-full px-3 text-sm ${item === page
-                                                                ? "bg-black text-white"
-                                                                : "border border-gray-200"
+                                                            className={`h-10 min-w-10 rounded-full px-3 text-sm${item === page
+                                                                ? "ui-btn-primary"
+                                                                : "border ui-btn-outline"
                                                                 }`}
                                                         >
                                                             {item}
@@ -736,7 +736,7 @@ const Shop = () => {
                                             type="button"
                                             disabled={page >= totalPages}
                                             onClick={() => goToPage(page + 1)}
-                                            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 disabled:cursor-not-allowed disabled:opacity-30"
+                                            className="flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-30 ui-btn-outline"
                                         >
                                             <ChevronRight size={17} />
                                         </button>
@@ -763,7 +763,7 @@ const Shop = () => {
                             <button
                                 type="button"
                                 onClick={() => setMobileFiltersOpen(false)}
-                            >
+                             className="ui-btn-outline">
                                 <X size={20} />
                             </button>
                         </div>
@@ -773,7 +773,7 @@ const Shop = () => {
                         <button
                             type="button"
                             onClick={() => setMobileFiltersOpen(false)}
-                            className="mt-8 w-full rounded-full bg-black py-3 text-sm font-medium text-white"
+                            className="mt-8 w-full rounded-full py-3 text-sm font-medium ui-btn-primary"
                         >
                             Show results
                         </button>

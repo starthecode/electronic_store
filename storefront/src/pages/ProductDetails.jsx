@@ -196,7 +196,7 @@ const ProductDetails = () => {
 
           <button
             onClick={() => navigate("/shop")}
-            className="mt-8 rounded-full bg-black px-8 py-3 text-sm font-medium text-white transition hover:bg-[#222]"
+            className="mt-8 rounded-full px-8 py-3 text-sm font-medium transition ui-btn-primary"
           >
             Back to Shop
           </button>

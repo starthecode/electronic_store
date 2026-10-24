@@ -324,7 +324,7 @@ export default function RoleDetails() {
           onClick={() =>
             navigate("/admin/roles")
           }
-          className="inline-flex items-center gap-2 text-sm text-gray-500"
+          className="inline-flex items-center gap-2 text-sm ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Roles
@@ -349,7 +349,7 @@ export default function RoleDetails() {
           onClick={() =>
             navigate("/admin/roles")
           }
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm font-medium ui-btn-outline"
         >
           <ArrowLeft size={16} />
           Back to Roles
@@ -357,7 +357,7 @@ export default function RoleDetails() {
 
         <button
           onClick={load}
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-medium ui-btn-outline"
         >
           <RefreshCw size={15} />
           Refresh
@@ -410,7 +410,7 @@ export default function RoleDetails() {
                   `/admin/roles/${id}/edit`
                 )
               }
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700"
+              className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
             >
               <Edit size={15} />
               Edit
@@ -419,7 +419,7 @@ export default function RoleDetails() {
             <button
               onClick={handleDeleteRole}
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600"
+              className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 ui-btn-danger"
             >
               <Trash2 size={15} />
               Delete
@@ -478,7 +478,7 @@ export default function RoleDetails() {
                 availablePermissions.length ===
                 0
               }
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-40"
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium disabled:opacity-40 ui-btn-primary"
             >
               <Plus size={16} />
               Add Permissions
@@ -572,7 +572,7 @@ export default function RoleDetails() {
                                   disabled={
                                     saving
                                   }
-                                  className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                  className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 ui-btn-danger"
                                   title="Remove permission"
                                 >
                                   <Trash2
@@ -674,7 +674,7 @@ function PermissionModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100"
+            className="flex h-9 w-9 items-center justify-center rounded-lg ui-btn-outline"
           >
             <X size={18} />
           </button>
@@ -750,7 +750,7 @@ function PermissionModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700"
+            className="rounded-xl border px-4 py-2.5 text-sm font-medium ui-btn-outline"
           >
             Cancel
           </button>
@@ -762,7 +762,7 @@ function PermissionModal({
               saving ||
               selected.length === 0
             }
-            className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-40"
+            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium disabled:opacity-40 ui-btn-primary"
           >
             {saving && (
               <Loader2

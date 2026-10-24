@@ -151,7 +151,7 @@ const PermissionGroup = ({
               <button
                 type="button"
                 onClick={toggleGroup}
-                className="text-xs font-medium text-gray-500 hover:text-gray-900"
+                className="text-xs font-medium ui-btn-outline"
               >
                 {allSelected
                   ? "Clear all"

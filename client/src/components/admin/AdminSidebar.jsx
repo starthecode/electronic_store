@@ -165,7 +165,7 @@ const AdminSidebar = ({ open, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 lg:hidden"
+            className="rounded-lg p-2 lg:hidden ui-btn-outline"
           >
             <X size={20} />
           </button>
