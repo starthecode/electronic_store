@@ -54,3 +54,13 @@ export const deleteSetting = async (key) => {
 
   return response.data;
 };
+
+export const getStoreBrandingSettings = async () => {
+  const response = await api.get("/settings/branding");
+  return response.data;
+};
+
+export const saveStoreBrandingSettings = async (data) => {
+  const response = await api.patch("/settings/branding", data);
+  return response.data;
+};

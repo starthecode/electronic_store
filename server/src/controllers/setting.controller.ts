@@ -3,8 +3,10 @@ import type { AuthenticatedRequest } from "../middleware/auth.middleware.js";
 import {
   createSetting,
   deleteSetting,
+  getStoreBranding,
   getSettingByKey,
   getSettings,
+  saveStoreBranding,
   updateSetting,
 } from "../services/setting.service.js";
 import { successResponse } from "../utils/apiResponse.js";
@@ -88,3 +90,23 @@ export const deleteSettingController = async (
     "Setting deleted successfully"
   );
 };
+
+export const getStoreBrandingSettings = async (
+  _req: AuthenticatedRequest,
+  res: Response
+) =>
+  successResponse(
+    res,
+    "Store branding settings fetched successfully",
+    await getStoreBranding()
+  );
+
+export const updateStoreBrandingSettings = async (
+  req: AuthenticatedRequest,
+  res: Response
+) =>
+  successResponse(
+    res,
+    "Store branding settings updated successfully",
+    await saveStoreBranding(req.body, req.user!.userId)
+  );

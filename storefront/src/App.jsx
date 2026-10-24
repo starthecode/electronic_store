@@ -24,14 +24,16 @@ import Checkout from "./pages/Checkout";
 import { CartProvider } from "./context/CartContext";
 import Privacy from "./pages/Privacy";
 import { AffiliateAnalyticsProvider } from "./context/AffiliateAnalyticsContext";
+import { StoreBrandingProvider } from "./context/StoreBrandingContext.jsx";
 
 const App = () => {
   return (
     <BrowserRouter>
       <AffiliateAnalyticsProvider>
-        <CartProvider>
-          <Header />
-          <Routes>
+        <StoreBrandingProvider>
+          <CartProvider>
+            <Header />
+            <Routes>
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -54,10 +56,11 @@ const App = () => {
               <Route path="/account/orders" element={<Orders />} />
               <Route path="/account/orders/:id" element={<OrderDetail />} />
             </Route>
-          </Routes>
+            </Routes>
 
-          <Footer />
-        </CartProvider>
+            <Footer />
+          </CartProvider>
+        </StoreBrandingProvider>
       </AffiliateAnalyticsProvider>
     </BrowserRouter>
   );

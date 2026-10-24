@@ -7,10 +7,23 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useStoreBranding } from "../../context/useStoreBranding";
 
 const Header = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
+  const { logoUrl, storeName, logoAltText } = useStoreBranding();
+  const [failedLogoUrl, setFailedLogoUrl] = React.useState("");
+  const validLogoUrl = (() => {
+    try {
+      const url = new URL(logoUrl);
+      return ["http:", "https:"].includes(url.protocol) &&
+        !url.username &&
+        !url.password;
+    } catch {
+      return false;
+    }
+  })();
 
   return (
     <header className="border-b border-transparent bg-white">
@@ -53,9 +66,21 @@ const Header = () => {
 
         <Link
           to="/"
-          className="absolute left-1/2 -translate-x-1/2 text-[15px] font-bold tracking-[-0.5px]"
+          aria-label={`${storeName} home`}
+          className="absolute left-1/2 flex max-w-[150px] -translate-x-1/2 items-center justify-center"
         >
-          Gearadge
+          {validLogoUrl && failedLogoUrl !== logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={logoAltText || storeName}
+              onError={() => setFailedLogoUrl(logoUrl)}
+              className="max-h-10 max-w-full object-contain"
+            />
+          ) : (
+            <span className="max-w-full truncate text-[15px] font-bold tracking-[-0.5px]">
+              {storeName}
+            </span>
+          )}
         </Link>
 
         <div className="ml-auto flex items-center gap-4">

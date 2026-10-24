@@ -2,8 +2,10 @@ import { Router } from "express";
 import {
   createSettingController,
   deleteSettingController,
+  getStoreBrandingSettings,
   getSetting,
   listSettings,
+  updateStoreBrandingSettings,
   updateSettingController,
 } from "../controllers/setting.controller.js";
 import { requireAuth } from "../middleware/auth.middleware.js"; 
@@ -13,6 +15,7 @@ import {
   createSettingSchema,
   listSettingsSchema,
   settingKeySchema,
+  storeBrandingSchema,
   updateSettingSchema,
 } from "../validators/setting.validator.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -26,6 +29,19 @@ router.get(
   requirePermission("settings.read"),
   validate(listSettingsSchema),
   asyncHandler(listSettings)
+);
+
+router.get(
+  "/branding",
+  requirePermission("settings.read"),
+  asyncHandler(getStoreBrandingSettings)
+);
+
+router.patch(
+  "/branding",
+  requirePermission("settings.update"),
+  validate(storeBrandingSchema),
+  asyncHandler(updateStoreBrandingSettings)
 );
 
 router.get(

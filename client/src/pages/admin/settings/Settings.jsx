@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Eye,
+  Image,
   Pencil,
   Plus,
   RefreshCw,
@@ -12,7 +13,9 @@ import { useNavigate } from "react-router-dom";
 
 import {
   deleteSetting,
+  getStoreBrandingSettings,
   getSettings,
+  saveStoreBrandingSettings,
 } from "../../../services/setting.service";
 
 import SettingCategoryBadge from "../../../components/settings/SettingCategoryBadge";
@@ -31,6 +34,230 @@ const categories = [
   "NOTIFICATIONS",
   "SYSTEM",
 ];
+
+const emptyBranding = {
+  logoUrl: "",
+  storeName: "Store",
+  logoAltText: "",
+};
+
+const isValidImageUrl = (value) => {
+  try {
+    const url = new URL(value);
+    return (
+      ["http:", "https:"].includes(url.protocol) &&
+      !url.username &&
+      !url.password
+    );
+  } catch {
+    return false;
+  }
+};
+
+const StoreBrandingSection = () => {
+  const [form, setForm] = useState(emptyBranding);
+  const [saved, setSaved] = useState(emptyBranding);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [failedImage, setFailedImage] = useState("");
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    getStoreBrandingSettings()
+      .then((response) => {
+        if (!response.success) {
+          throw new Error(response.message || "Unable to load store branding.");
+        }
+        const branding = {
+          ...emptyBranding,
+          ...response.data,
+          logoAltText: response.data.logoAltText === response.data.storeName
+            ? ""
+            : response.data.logoAltText ?? "",
+        };
+        if (!cancelled) {
+          setForm(branding);
+          setSaved(branding);
+        }
+      })
+      .catch((loadError) => {
+        if (!cancelled) {
+          setError(
+            loadError?.response?.data?.message ||
+              loadError?.message ||
+              "Unable to load store branding."
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const updateField = (field, value) =>
+    setForm((current) => ({ ...current, [field]: value }));
+
+  const cancel = () => {
+    setForm(saved);
+    setError("");
+    setNotice("");
+  };
+
+  const save = async (event) => {
+    event.preventDefault();
+    setError("");
+    setNotice("");
+    const storeName = form.storeName.trim();
+    const logoUrl = form.logoUrl.trim();
+    if (!storeName) {
+      setError("Store name is required.");
+      return;
+    }
+    if (logoUrl && !isValidImageUrl(logoUrl)) {
+      setError("Logo URL must be a valid HTTP or HTTPS URL.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await saveStoreBrandingSettings({
+        storeName,
+        logoUrl,
+        logoAltText: form.logoAltText.trim(),
+      });
+      if (!response.success) {
+        throw new Error(response.message || "Unable to save store branding.");
+      }
+      const branding = {
+        ...emptyBranding,
+        ...response.data,
+        logoAltText: response.data.logoAltText === response.data.storeName
+          ? ""
+          : response.data.logoAltText ?? "",
+      };
+      setForm(branding);
+      setSaved(branding);
+      setNotice("Store branding saved.");
+    } catch (saveError) {
+      setError(
+        saveError?.response?.data?.message ||
+          saveError?.message ||
+          "Unable to save store branding."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const previewName = form.storeName.trim() || "Store";
+  const previewLogoUrl =
+    isValidImageUrl(form.logoUrl.trim()) &&
+    failedImage !== form.logoUrl.trim();
+
+  return (
+    <section className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold text-gray-900">Store Branding</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Choose the logo and fallback name shown in the storefront header.
+        </p>
+      </div>
+
+      {error && (
+        <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+      {notice && (
+        <div role="status" className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          {notice}
+        </div>
+      )}
+
+      <form onSubmit={save} className="grid gap-6 lg:grid-cols-[1fr_280px]">
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Logo Image URL (optional)
+            <input
+              type="url"
+              maxLength={2048}
+              value={form.logoUrl}
+              onChange={(event) => updateField("logoUrl", event.target.value)}
+              placeholder="https://example.com/store-logo.png"
+              disabled={loading || saving}
+              className="mt-1 block min-h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+            />
+          </label>
+          <label className="block text-sm font-medium text-gray-700">
+            Store Name / Text Logo *
+            <input
+              required
+              maxLength={100}
+              value={form.storeName}
+              onChange={(event) => updateField("storeName", event.target.value)}
+              disabled={loading || saving}
+              className="mt-1 block min-h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+            />
+          </label>
+          <label className="block text-sm font-medium text-gray-700">
+            Logo Alt Text (optional)
+            <input
+              maxLength={200}
+              value={form.logoAltText}
+              onChange={(event) => updateField("logoAltText", event.target.value)}
+              placeholder={`Defaults to ${previewName}`}
+              disabled={loading || saving}
+              className="mt-1 block min-h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+            />
+          </label>
+        </div>
+
+        <div className="flex flex-col">
+          <p className="mb-2 text-sm font-medium text-gray-700">Live Preview</p>
+          <div className="flex min-h-32 flex-1 items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4">
+            {loading ? (
+              <span className="text-sm text-gray-400">Loading branding...</span>
+            ) : previewLogoUrl ? (
+              <img
+                src={form.logoUrl.trim()}
+                alt={form.logoAltText.trim() || previewName}
+                onError={() => setFailedImage(form.logoUrl.trim())}
+                className="max-h-20 max-w-full object-contain"
+              />
+            ) : (
+              <span className="inline-flex items-center gap-2 text-lg font-bold tracking-tight text-gray-900">
+                <Image size={18} aria-hidden="true" className="text-gray-400" />
+                {previewName}
+              </span>
+            )}
+          </div>
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={cancel}
+              disabled={loading || saving}
+              className="rounded-xl border px-4 py-2 text-sm font-medium disabled:opacity-50 ui-btn-outline"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || saving}
+              className="rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50 ui-btn-primary"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  );
+};
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -201,6 +428,8 @@ const Settings = () => {
             </button>
           </div>
         </div>
+
+        <StoreBrandingSection />
 
         {/* Filters */}
         <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">

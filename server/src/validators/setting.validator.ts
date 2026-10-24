@@ -90,3 +90,31 @@ export const listSettingsSchema = z.object({
     limit: z.coerce.number().int().min(1).max(100).optional(),
   }),
 });
+
+const publicImageUrl = z
+  .string()
+  .trim()
+  .max(2048)
+  .refine((value) => {
+    if (!value) return true;
+    try {
+      const url = new URL(value);
+      return (
+        ["http:", "https:"].includes(url.protocol) &&
+        !url.username &&
+        !url.password
+      );
+    } catch {
+      return false;
+    }
+  }, "Logo URL must be a valid HTTP or HTTPS URL");
+
+export const storeBrandingSchema = z.object({
+  body: z.object({
+    logoUrl: publicImageUrl,
+    storeName: z.string().trim().min(1).max(100),
+    logoAltText: z.string().trim().max(200),
+  }),
+  params: z.object({}),
+  query: z.object({}),
+});

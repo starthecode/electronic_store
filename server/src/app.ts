@@ -36,6 +36,7 @@ import dashboardRoutes from "./routes/dashboard.routes.js";
 import storeProductRoutes from "./routes/public/storeProduct.routes.js";
 import storeCategoryRoutes from "./routes/public/storeCategory.routes.js";
 import storeBrandRoutes from "./routes/public/storeBrand.routes.js";
+import storeBrandingRoutes from "./routes/public/storeBranding.routes.js";
 import checkoutRoutes from "./routes/public/checkout.routes.js";
 
 import customerOrderRoutes
@@ -123,6 +124,11 @@ app.use(
 app.use(
   "/api/store/brands",
   storeBrandRoutes
+);
+
+app.use(
+  "/api/store/branding",
+  storeBrandingRoutes
 );
 
 app.use(

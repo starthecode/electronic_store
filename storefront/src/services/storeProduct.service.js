@@ -55,6 +55,11 @@ export const getStoreBrands = async () => {
   return response.data;
 };
 
+export const getStoreBranding = async () => {
+  const response = await api.get("/store/branding");
+  return response.data;
+};
+
 export const getStoreHomepageSlides = async () => {
   const response = await api.get("/store/homepage/slides");
   return response.data;
