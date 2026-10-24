@@ -42,12 +42,25 @@ const destinationUrl = z
   }, "Destination must be a storefront path or HTTP/HTTPS URL");
 
 const slideFields = {
+  brandName: z.string().trim().max(100).nullable().optional(),
   title: z.string().trim().min(1).max(150),
+  titleHighlight: z.string().trim().max(150).nullable().optional(),
   description: z.string().trim().min(1).max(1500),
+  featureBullets: z.array(z.string().trim().min(1).max(180)).max(8).optional(),
+  specText: z.string().trim().max(180).nullable().optional(),
+  priceLabel: z.string().trim().max(60).nullable().optional(),
+  price: z.string().trim().max(60).nullable().optional(),
+  variantLabels: z.array(z.string().trim().min(1).max(60)).max(8).optional(),
   buttonLabel: z.string().trim().min(1).max(60),
   buttonUrl: destinationUrl,
   imageUrl: httpUrl,
   mobileImageUrl: httpUrl.nullable().optional(),
+  backgroundImageUrl: httpUrl.nullable().optional(),
+  backgroundColor: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .nullable()
+    .optional(),
   sortOrder: z.number().int().min(0).max(10000).optional(),
   isActive: z.boolean().optional(),
 };

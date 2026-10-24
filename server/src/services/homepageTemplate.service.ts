@@ -15,12 +15,21 @@ export const getPublicHomepageSlides = () =>
     where: { isActive: true },
     select: {
       id: true,
+      brandName: true,
       title: true,
+      titleHighlight: true,
       description: true,
+      featureBullets: true,
+      specText: true,
+      priceLabel: true,
+      price: true,
+      variantLabels: true,
       buttonLabel: true,
       buttonUrl: true,
       imageUrl: true,
       mobileImageUrl: true,
+      backgroundImageUrl: true,
+      backgroundColor: true,
       sortOrder: true,
     },
     orderBy: orderedBy,
@@ -28,12 +37,21 @@ export const getPublicHomepageSlides = () =>
 
 export const createHomepageSlide = async (
   data: {
+    brandName?: string | null;
     title: string;
+    titleHighlight?: string | null;
     description: string;
+    featureBullets?: string[];
+    specText?: string | null;
+    priceLabel?: string | null;
+    price?: string | null;
+    variantLabels?: string[];
     buttonLabel: string;
     buttonUrl: string;
     imageUrl: string;
     mobileImageUrl?: string | null;
+    backgroundImageUrl?: string | null;
+    backgroundColor?: string | null;
     sortOrder?: number;
     isActive?: boolean;
   },
@@ -53,12 +71,21 @@ export const createHomepageSlide = async (
 export const updateHomepageSlide = async (
   id: string,
   data: {
+    brandName?: string | null;
     title?: string;
+    titleHighlight?: string | null;
     description?: string;
+    featureBullets?: string[];
+    specText?: string | null;
+    priceLabel?: string | null;
+    price?: string | null;
+    variantLabels?: string[];
     buttonLabel?: string;
     buttonUrl?: string;
     imageUrl?: string;
     mobileImageUrl?: string | null;
+    backgroundImageUrl?: string | null;
+    backgroundColor?: string | null;
     sortOrder?: number;
     isActive?: boolean;
   },

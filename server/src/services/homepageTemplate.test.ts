@@ -69,12 +69,21 @@ test("public slide listing filters active slides and selects public fields in di
     ]);
     assert.deepEqual(query?.select, {
       id: true,
+      brandName: true,
       title: true,
+      titleHighlight: true,
       description: true,
+      featureBullets: true,
+      specText: true,
+      priceLabel: true,
+      price: true,
+      variantLabels: true,
       buttonLabel: true,
       buttonUrl: true,
       imageUrl: true,
       mobileImageUrl: true,
+      backgroundImageUrl: true,
+      backgroundColor: true,
       sortOrder: true,
     });
   } finally {
@@ -231,7 +240,37 @@ test("template validators reject unsafe destinations and invalid star ratings", 
   );
   assert.doesNotThrow(() =>
     createHomepageSlideSchema.parse({
-      body: { ...baseSlide, buttonUrl: "/shop" },
+      body: {
+        ...baseSlide,
+        buttonUrl: "/shop",
+        brandName: "Device brand",
+        titleHighlight: "Highlighted copy",
+        featureBullets: ["Foldable display"],
+        specText: "256GB + 12GB",
+        priceLabel: "BDT",
+        price: "285,999",
+        variantLabels: ["Graphite"],
+        backgroundImageUrl: "https://images.example/background.jpg",
+        backgroundColor: "#ffffff",
+      },
+      params: {},
+      query: {},
+    })
+  );
+  assert.throws(() =>
+    createHomepageSlideSchema.parse({
+      body: {
+        ...baseSlide,
+        buttonUrl: "/shop",
+        featureBullets: ["x".repeat(181)],
+      },
+      params: {},
+      query: {},
+    })
+  );
+  assert.throws(() =>
+    createHomepageSlideSchema.parse({
+      body: { ...baseSlide, buttonUrl: "/shop", backgroundColor: "red" },
       params: {},
       query: {},
     })

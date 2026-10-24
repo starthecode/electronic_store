@@ -799,12 +799,21 @@ model Setting {
 
 model HomepageSlide {
   id             String   @id @default(uuid()) @db.Uuid
+  brandName      String?
   title          String
+  titleHighlight String?
   description    String
+  featureBullets String[] @default([])
+  specText       String?
+  priceLabel     String?
+  price          String?
+  variantLabels  String[] @default([])
   buttonLabel    String
   buttonUrl      String
   imageUrl       String
   mobileImageUrl String?
+  backgroundImageUrl String?
+  backgroundColor String?
   sortOrder      Int      @default(0)
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
