@@ -18,11 +18,25 @@ export const checkAuth = createAsyncThunk("auth/checkAuth", async (_, { rejectWi
   catch (error) { return rejectWithValue(error.message); }
 });
 export const login = createAsyncThunk("auth/login", async (credentials, { rejectWithValue }) => {
-  try { return normalizeUser(await loginRequest(credentials)); }
+  try {
+    await loginRequest(credentials);
+    const user = normalizeUser(await getCurrentUser());
+    if (!user) {
+      throw new Error("Sign-in completed, but the session cookie was not accepted. Check your browser cookie settings and try again.");
+    }
+    return user;
+  }
   catch (error) { return rejectWithValue(error.message); }
 });
 export const register = createAsyncThunk("auth/register", async (payload, { rejectWithValue }) => {
-  try { return normalizeUser(await registerRequest(payload)); }
+  try {
+    await registerRequest(payload);
+    const user = normalizeUser(await getCurrentUser());
+    if (!user) {
+      throw new Error("Account created, but the session cookie was not accepted. Check your browser cookie settings and sign in again.");
+    }
+    return user;
+  }
   catch (error) { return rejectWithValue(error.message); }
 });
 export const logout = createAsyncThunk("auth/logout", async () => { await logoutRequest(); return null; });

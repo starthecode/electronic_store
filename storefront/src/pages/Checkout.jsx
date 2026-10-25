@@ -15,8 +15,9 @@ import {
   X,
 } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCart } from "../context/CartContext";
+import { checkAuth } from "../store/slices/authSlice";
 import {
   createAddress,
   createOrder,
@@ -172,6 +173,7 @@ const StepIndicator = ({ step, onSelect }) => {
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const { user } = useSelector((state) => state.auth);
   const { items, subtotal: cartSubtotal, isEmpty, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -224,24 +226,42 @@ const Checkout = () => {
 
   useEffect(() => {
     let active = true;
-    Promise.all([getAddresses(), getProfile(), getCheckoutConfig()])
-      .then(([addressData, profileData, config]) => {
+    dispatch(checkAuth())
+      .unwrap()
+      .then((authenticatedUser) => {
+        if (!authenticatedUser) {
+          navigate("/login", {
+            replace: true,
+            state: { from: "/checkout" },
+          });
+          return null;
+        }
+        return Promise.all([getAddresses(), getProfile(), getCheckoutConfig()]);
+      })
+      .then((checkoutData) => {
+        if (!checkoutData) return;
+        const [addressData, profileData, config] = checkoutData;
         if (!active) return;
         const savedAddresses = Array.isArray(addressData) ? addressData : [];
         setAddresses(savedAddresses);
-        setProfile(profileData?.user || profileData || user);
+        setProfile(profileData?.user || profileData);
         setCashfreeAvailable(Boolean(config?.cashfreeSandboxAvailable));
         setBillingAddressId((current) => current || savedAddresses.find((address) => address.type === "BILLING" && address.isDefault)?.id || savedAddresses.find((address) => address.type === "BILLING")?.id || savedAddresses.find((address) => address.isDefault)?.id || "");
         setShippingAddressId((current) => current || savedAddresses.find((address) => address.type === "SHIPPING" && address.isDefault)?.id || savedAddresses.find((address) => address.type === "SHIPPING")?.id || "");
       })
       .catch((loadError) => {
-        if (active) setError(loadError.message || "Unable to load your checkout details.");
+        if (active) {
+          setError(
+            (typeof loadError === "string" ? loadError : loadError.message) ||
+            "Unable to load your checkout details."
+          );
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
       });
     return () => { active = false; };
-  }, [user]);
+  }, [dispatch, navigate]);
 
   const shippingAddress = deliverToBilling
     ? addresses.find((address) => address.id === billingAddressId)

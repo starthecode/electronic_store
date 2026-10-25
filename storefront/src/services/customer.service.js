@@ -1,9 +1,7 @@
-import axios from "axios";
+import api, { getApiErrorMessage } from "./apiClient";
 
-const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api", timeout: 10000, withCredentials: true });
 const unwrap = (response) => response?.data?.data ?? response?.data ?? null;
-const message = (error, fallback) => error?.response?.data?.message || error?.message || fallback;
-const request = async (call, fallback) => { try { return unwrap(await call()); } catch (error) { throw new Error(message(error, fallback), { cause: error }); } };
+const request = async (call, fallback) => { try { return unwrap(await call()); } catch (error) { throw new Error(getApiErrorMessage(error, fallback), { cause: error }); } };
 
 export const getProfile = () => request(() => api.get("/store/account/profile"), "Unable to load your profile");
 export const updateProfile = (data) => request(() => api.patch("/store/account/profile", data), "Unable to update your profile");
