@@ -110,50 +110,66 @@ export const createInventory = async (
     );
   }
 
-  const existingInventory = await prisma.inventory.findUnique({
-    where: {
-      variantId,
-    },
-  });
+  try {
+    return await runInventoryTransaction(async (tx) => {
+      const existingInventory = await tx.inventory.findUnique({
+        where: {
+          variantId,
+        },
+      });
 
-  if (existingInventory) {
-    throw new AppError(
-      "Inventory already exists for this variant",
-      409
-    );
+      if (existingInventory) {
+        throw new AppError(
+          "Inventory already exists for this variant",
+          409
+        );
+      }
+
+      const inventory = await tx.inventory.create({
+        data: {
+          variantId,
+          quantity,
+          reservedQuantity,
+          reorderLevel,
+        },
+      });
+
+      await createAuditLogTx(tx, {
+        userId,
+        action: "CREATE",
+        entity: "Inventory",
+        entityId: inventory.id,
+        description: "Created inventory for variant",
+        metadata: {
+          productId,
+          variantId,
+          quantity,
+          reservedQuantity,
+          reorderLevel,
+        },
+      });
+
+      return {
+        ...inventory,
+        availableQuantity: calculateAvailableQuantity(
+          inventory.quantity,
+          inventory.reservedQuantity
+        ),
+      };
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw new AppError(
+        "Inventory already exists for this variant",
+        409
+      );
+    }
+
+    throw error;
   }
-
-  const inventory = await prisma.inventory.create({
-    data: {
-      variantId,
-      quantity,
-      reservedQuantity,
-      reorderLevel,
-    },
-  });
-
-  await createAuditLog({
-    userId,
-    action: "CREATE",
-    entity: "Inventory",
-    entityId: inventory.id,
-    description: `Created inventory for variant`,
-    metadata: {
-      productId,
-      variantId,
-      quantity,
-      reservedQuantity,
-      reorderLevel,
-    },
-  });
-
-  return {
-    ...inventory,
-    availableQuantity: calculateAvailableQuantity(
-      inventory.quantity,
-      inventory.reservedQuantity
-    ),
-  };
 };
 
 export const updateInventory = async (

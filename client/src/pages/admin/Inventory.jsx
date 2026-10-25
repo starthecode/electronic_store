@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AlertTriangle,
   ChevronLeft,
@@ -6,6 +6,7 @@ import {
   History,
   Loader2,
   Package,
+  Plus,
   RefreshCw,
   Search,
   Settings,
@@ -19,6 +20,8 @@ import {
 
 import InventoryAdjustModal from "../../components/admin/InventoryAdjustModal";
 import InventoryTransactionsModal from "../../components/admin/InventoryTransactionsModal";
+import AddInventoryModal from "../../components/admin/AddInventoryModal";
+import { loadInventorySnapshot } from "../../utils/inventoryData";
 
 const Inventory = () => {
   const [inventories, setInventories] = useState([]);
@@ -30,17 +33,19 @@ const Inventory = () => {
   });
 
   const [summary, setSummary] = useState({
-  totalStock: 0,
-  totalReserved: 0,
-  totalAvailable: 0,
-  lowStockProducts: 0,
-});
+    totalStock: 0,
+    totalReserved: 0,
+    totalAvailable: 0,
+    lowStockProducts: 0,
+  });
 
   const [search, setSearch] = useState("");
   const [lowStock, setLowStock] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showAddInventory, setShowAddInventory] = useState(false);
 
   const [adjustInventoryItem, setAdjustInventoryItem] =
     useState(null);
@@ -48,64 +53,77 @@ const Inventory = () => {
   const [historyInventory, setHistoryInventory] =
     useState(null);
 
-const loadInventory = async (
-  page = pagination.page
-) => {
-  try {
-    setLoading(true);
-    setError("");
+  const loadInventory = useCallback(
+    async (page) => {
+      try {
+        setLoading(true);
+        setError("");
 
-    const [listResponse, summaryResponse] =
-      await Promise.all([
-        getInventoryList({
-          page,
-          limit: pagination.limit,
-          search: search.trim() || undefined,
-          lowStock: lowStock || undefined,
-        }),
+        const snapshot = await loadInventorySnapshot(
+          getInventoryList,
+          getInventorySummary,
+          {
+            page,
+            limit: pagination.limit,
+            search: search.trim() || undefined,
+            lowStock: lowStock || undefined,
+          }
+        );
 
-        getInventorySummary(),
-      ]);
+        setInventories(snapshot.inventories);
 
-    const listData = listResponse.data;
-    const summaryData = summaryResponse.data;
+        setPagination(
+          snapshot.pagination ?? {
+            page,
+            limit: pagination.limit,
+            total: 0,
+            totalPages: 0,
+          }
+        );
 
-    setInventories(listData?.inventories ?? []);
+        setSummary(snapshot.summary);
+        return true;
+      } catch (err) {
+        console.error(err);
 
-    setPagination(
-      listData?.pagination ?? {
-        page,
-        limit: pagination.limit,
-        total: 0,
-        totalPages: 0,
+        setError(
+          err?.response?.data?.message ||
+            "Failed to load inventory."
+        );
+        return false;
+      } finally {
+        setLoading(false);
       }
-    );
+    },
+    [pagination.limit, search, lowStock]
+  );
 
-    setSummary({
-      totalStock: summaryData?.totalStock ?? 0,
-      totalReserved: summaryData?.totalReserved ?? 0,
-      totalAvailable: summaryData?.totalAvailable ?? 0,
-      lowStockProducts:
-        summaryData?.lowStockProducts ?? 0,
-    });
-  } catch (err) {
-    console.error(err);
-
-    setError(
-      err?.response?.data?.message ||
-        "Failed to load inventory."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
   useEffect(() => {
-    loadInventory(1);
-  }, [search, lowStock]);
+    const timeoutId = window.setTimeout(() => {
+      loadInventory(1);
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [loadInventory]);
 
   const handleAdjustmentSuccess = () => {
     loadInventory(pagination.page);
   };
+
+  const handleInventoryCreated = async () => {
+    const refreshed = await loadInventory(1);
+    setShowAddInventory(false);
+    setSuccessMessage(
+      refreshed
+        ? "Inventory created successfully."
+        : "Inventory created, but the list could not be refreshed. Use Refresh to reload it."
+    );
+  };
+
+  const handleOpenExistingInventory = (inventory) => {
+    setShowAddInventory(false);
+    setAdjustInventoryItem(inventory);
+  };
+
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -119,19 +137,38 @@ const loadInventory = async (
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => loadInventory(pagination.page)}
-          disabled={loading}
-          className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-60 ui-btn-outline"
-        >
-          <RefreshCw
-            size={17}
-            className={loading ? "animate-spin" : ""}
-          />
-          Refresh
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => {
+              setSuccessMessage("");
+              setShowAddInventory(true);
+            }}
+            className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium ui-btn-primary"
+          >
+            <Plus size={17} />
+            Add Inventory
+          </button>
+          <button
+            type="button"
+            onClick={() => loadInventory(pagination.page)}
+            disabled={loading}
+            className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-60 ui-btn-outline"
+          >
+            <RefreshCw
+              size={17}
+              className={loading ? "animate-spin" : ""}
+            />
+            Refresh
+          </button>
+        </div>
       </div>
+
+      {successMessage && (
+        <div role="status" className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+          {successMessage}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
@@ -401,6 +438,14 @@ const loadInventory = async (
             setAdjustInventoryItem(null)
           }
           onSuccess={handleAdjustmentSuccess}
+        />
+      )}
+
+      {showAddInventory && (
+        <AddInventoryModal
+          onClose={() => setShowAddInventory(false)}
+          onCreated={handleInventoryCreated}
+          onOpenExistingInventory={handleOpenExistingInventory}
         />
       )}
 

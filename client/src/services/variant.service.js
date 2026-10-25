@@ -1,8 +1,9 @@
 import api from "./api";
 
-export const getVariants = async (productId) => {
+export const getVariants = async (productId, params = {}) => {
   const response = await api.get(
-    `/products/${productId}/variants`
+    `/products/${productId}/variants`,
+    { params }
   );
 
   return response.data;

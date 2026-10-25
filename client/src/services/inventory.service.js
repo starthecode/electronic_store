@@ -2,12 +2,12 @@ import api from "./api";
 
 export const getInventoryList = async (params = {}) => {
   const response = await api.get("/inventory", { params });
-  return response.data;
+  return response.data?.data ?? response.data;
 };
 
 export const getInventorySummary = async () => {
   const response = await api.get("/inventory/summary");
-  return response.data;
+  return response.data?.data ?? response.data;
 };
 
 export const getInventory = async (productId, variantId) => {
