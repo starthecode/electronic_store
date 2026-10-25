@@ -80,7 +80,17 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({
+  verify: (req, _res, buffer) => {
+    const request = req as typeof req & {
+      originalUrl?: string;
+      rawBody?: Buffer;
+    };
+    if (request.originalUrl?.startsWith("/api/store/checkout/cashfree/webhook")) {
+      request.rawBody = Buffer.from(buffer);
+    }
+  },
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 

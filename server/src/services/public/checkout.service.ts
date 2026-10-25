@@ -12,11 +12,17 @@ interface CheckoutItemInput {
 
 interface CheckoutInput {
     userId: string;
+    requestId: string;
     items: CheckoutItemInput[];
     shippingAddressId: string;
     billingAddressId?: string;
-    paymentMethod: "COD";
+    paymentMethod: "COD" | "UPI" | "CARD";
     discountCode?: string;
+    checkoutNotes?: string;
+    gstDetails?: {
+        businessName: string;
+        gstin: string;
+    };
 }
 
 const money = (value: unknown) => Number(value ?? 0);
@@ -42,6 +48,78 @@ const snapshotAddress = (address: any) => ({
     postalCode: address.postalCode,
     country: address.country,
 });
+
+type IdempotentOrder = Prisma.OrderGetPayload<{
+    include: { items: true; payment: true };
+}>;
+
+const assertCheckoutRequestMatches = async (
+    tx: Prisma.TransactionClient,
+    order: IdempotentOrder,
+    input: CheckoutInput
+) => {
+    const addressFields = [
+        "type",
+        "firstName",
+        "lastName",
+        "phone",
+        "addressLine1",
+        "addressLine2",
+        "city",
+        "state",
+        "postalCode",
+        "country",
+    ] as const;
+    const matchesAddress = (stored: unknown, current: ReturnType<typeof snapshotAddress>) => {
+        if (!stored || typeof stored !== "object") return false;
+        return addressFields.every(
+            (field) =>
+                (stored as Record<string, unknown>)[field] === current[field]
+        );
+    };
+
+    const shippingAddress = await tx.address.findFirst({
+        where: { id: input.shippingAddressId, userId: input.userId },
+    });
+    const billingAddress = input.billingAddressId
+        ? await tx.address.findFirst({
+            where: { id: input.billingAddressId, userId: input.userId },
+        })
+        : shippingAddress;
+    const requestedItems = [...input.items]
+        .map(({ variantId, quantity }) => `${variantId}:${quantity}`)
+        .sort();
+    const existingItems = order.items
+        .map(({ variantId, quantity }) => `${variantId}:${quantity}`)
+        .sort();
+    const expectedGstDetails = input.gstDetails
+        ? {
+            businessName: input.gstDetails.businessName.trim(),
+            gstin: input.gstDetails.gstin.trim().toUpperCase(),
+        }
+        : null;
+    const existingGstDetails =
+        order.gstDetails && typeof order.gstDetails === "object"
+            ? order.gstDetails
+            : null;
+
+    if (
+        order.payment?.method !== input.paymentMethod ||
+        JSON.stringify(requestedItems) !== JSON.stringify(existingItems) ||
+        (order.discountCode || null) !== (input.discountCode?.trim().toUpperCase() || null) ||
+        (order.checkoutNotes || null) !== (input.checkoutNotes?.trim() || null) ||
+        JSON.stringify(existingGstDetails) !== JSON.stringify(expectedGstDetails) ||
+        !shippingAddress ||
+        !billingAddress ||
+        !matchesAddress(order.shippingAddress, snapshotAddress(shippingAddress)) ||
+        !matchesAddress(order.billingAddress, snapshotAddress(billingAddress))
+    ) {
+        throw new AppError(
+            "This checkout request was already used with different order details. Refresh checkout and try again.",
+            409
+        );
+    }
+};
 
 const calculateDiscount = async (
     tx: Prisma.TransactionClient,
@@ -181,11 +259,14 @@ const calculateDiscount = async (
 
 export const createCustomerOrder = async ({
     userId,
+    requestId,
     items,
     shippingAddressId,
     billingAddressId,
     paymentMethod,
     discountCode,
+    checkoutNotes,
+    gstDetails,
 }: CheckoutInput) => {
     if (!items.length) {
         throw new AppError("Your cart is empty", 400);
@@ -202,14 +283,40 @@ export const createCustomerOrder = async ({
         );
     }
 
-    return prisma.$transaction(
+    try {
+        return await prisma.$transaction(
         async (tx) => {
+            const existingOrder = await tx.order.findFirst({
+                where: {
+                    userId,
+                    checkoutRequestId: requestId,
+                },
+                include: {
+                    items: true,
+                    payment: true,
+                },
+            });
+
+            if (existingOrder) {
+                await assertCheckoutRequestMatches(tx, existingOrder, {
+                    userId,
+                    requestId,
+                    items,
+                    shippingAddressId,
+                    billingAddressId,
+                    paymentMethod,
+                    discountCode,
+                    checkoutNotes,
+                    gstDetails,
+                });
+                return existingOrder;
+            }
+
             const shippingAddress =
                 await tx.address.findFirst({
                     where: {
                         id: shippingAddressId,
                         userId,
-                        type: "SHIPPING",
                     },
                 });
 
@@ -421,6 +528,7 @@ export const createCustomerOrder = async ({
                 data: {
                     orderNumber: createOrderNumber(),
                     userId,
+                    checkoutRequestId: requestId,
 
                     /*
                      * Checkout already reserved inventory, so the order
@@ -438,6 +546,13 @@ export const createCustomerOrder = async ({
 
                     discountCode:
                         discount?.code ?? null,
+                    checkoutNotes: checkoutNotes?.trim() || null,
+                    gstDetails: gstDetails
+                        ? {
+                            businessName: gstDetails.businessName.trim(),
+                            gstin: gstDetails.gstin.trim().toUpperCase(),
+                        }
+                        : undefined,
 
                     shippingAddress:
                         snapshotAddress(shippingAddress),
@@ -557,5 +672,142 @@ export const createCustomerOrder = async ({
             maxWait: 5000,
             timeout: 15000,
         }
-    );
+        );
+    } catch (error) {
+        if (
+            error &&
+            typeof error === "object" &&
+            "code" in error &&
+            (error.code === "P2002" || error.code === "P2034")
+        ) {
+            const existingOrder = await prisma.order.findFirst({
+                where: { userId, checkoutRequestId: requestId },
+                include: { items: true, payment: true },
+            });
+            if (existingOrder) {
+                await prisma.$transaction((tx) =>
+                    assertCheckoutRequestMatches(tx, existingOrder, {
+                        userId,
+                        requestId,
+                        items,
+                        shippingAddressId,
+                        billingAddressId,
+                        paymentMethod,
+                        discountCode,
+                        checkoutNotes,
+                        gstDetails,
+                    })
+                );
+                return existingOrder;
+            }
+        }
+        throw error;
+    }
+};
+
+export const getCustomerCheckoutQuote = async ({
+    userId,
+    items,
+    shippingAddressId,
+    billingAddressId,
+    discountCode,
+}: Omit<CheckoutInput, "requestId" | "paymentMethod" | "checkoutNotes" | "gstDetails">) => {
+    if (!items.length) {
+        throw new AppError("Your cart is empty", 400);
+    }
+
+    const uniqueVariantIds = [...new Set(items.map((item) => item.variantId))];
+    if (uniqueVariantIds.length !== items.length) {
+        throw new AppError("Duplicate products are not allowed in checkout", 400);
+    }
+
+    return prisma.$transaction(async (tx) => {
+        const shippingAddress = await tx.address.findFirst({
+            where: { id: shippingAddressId, userId },
+            select: { id: true },
+        });
+        if (!shippingAddress) {
+            throw new AppError("Shipping address not found", 404);
+        }
+
+        if (billingAddressId) {
+            const billingAddress = await tx.address.findFirst({
+                where: { id: billingAddressId, userId },
+                select: { id: true },
+            });
+            if (!billingAddress) {
+                throw new AppError("Billing address not found", 404);
+            }
+        }
+
+        const variants = await tx.productVariant.findMany({
+            where: {
+                id: { in: uniqueVariantIds },
+                status: "ACTIVE",
+                product: { status: "ACTIVE" },
+            },
+            include: {
+                product: {
+                    select: { id: true, name: true, categoryId: true },
+                },
+                inventory: true,
+            },
+        });
+
+        if (variants.length !== uniqueVariantIds.length) {
+            throw new AppError("One or more products in your cart are no longer available", 409);
+        }
+
+        const variantMap = new Map(variants.map((variant) => [variant.id, variant]));
+        const orderItems = items.map((item) => {
+            const variant = variantMap.get(item.variantId);
+            if (!variant) {
+                throw new AppError("Product variant is no longer available", 409);
+            }
+            if (!variant.inventory) {
+                throw new AppError(`Inventory is unavailable for ${variant.sku}`, 409);
+            }
+            const available = variant.inventory.quantity - variant.inventory.reservedQuantity;
+            if (available < item.quantity) {
+                throw new AppError(`Insufficient stock for ${variant.product.name}`, 409);
+            }
+            const unitPrice = money(variant.price);
+            return {
+                variantId: variant.id,
+                productId: variant.product.id,
+                productName: variant.product.name,
+                variantName: variant.name,
+                sku: variant.sku,
+                quantity: item.quantity,
+                unitPrice,
+                totalPrice: Number((unitPrice * item.quantity).toFixed(2)),
+                product: variant.product,
+            };
+        });
+        const subtotal = Number(
+            orderItems.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)
+        );
+        const { discount, discountAmount } = await calculateDiscount(
+            tx,
+            discountCode,
+            subtotal,
+            orderItems,
+            userId
+        );
+        const shippingAmount = 0;
+        const taxAmount = 0;
+        const totalAmount = Number(
+            (subtotal - discountAmount + shippingAmount + taxAmount).toFixed(2)
+        );
+
+        return {
+            items: orderItems.map(({ product, ...item }) => item),
+            subtotal,
+            discountCode: discount?.code ?? null,
+            discountAmount,
+            shippingAmount,
+            taxAmount,
+            totalAmount,
+        };
+    });
 };

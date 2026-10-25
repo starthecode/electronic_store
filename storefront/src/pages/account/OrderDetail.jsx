@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -126,13 +126,16 @@ const TimelineIcon = ({ completed, current, cancelled }) => {
 };
 
 const OrderTimeline = ({ order }) => {
-    const history = Array.isArray(order?.statusHistory)
-        ? [...order.statusHistory].sort(
-            (a, b) =>
-                new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
-        )
-        : [];
+    const history = useMemo(
+        () => Array.isArray(order?.statusHistory)
+            ? [...order.statusHistory].sort(
+                (a, b) =>
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime()
+            )
+            : [],
+        [order]
+    );
 
     const historyByStatus = useMemo(() => {
         const map = new Map();
@@ -402,7 +405,7 @@ const OrderDetail = () => {
     const [actionLoading, setActionLoading] = useState(false);
     const [actionError, setActionError] = useState("");
 
-    const loadOrder = async () => {
+    const loadOrder = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
@@ -415,11 +418,14 @@ const OrderDetail = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
 
     useEffect(() => {
-        void loadOrder();
-    }, [id]);
+        const timer = window.setTimeout(() => {
+            void loadOrder();
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [loadOrder]);
 
     const canCancel =
         order &&
@@ -756,6 +762,12 @@ const OrderDetail = () => {
                                             "—"}
                                     </span>
                                 </div>
+                                {order.payment?.method === "COD" &&
+                                    order.payment?.status !== "PAID" && (
+                                        <p className="rounded-xl bg-amber-50 p-3 text-sm font-medium text-amber-800">
+                                            Payment due on delivery.
+                                        </p>
+                                    )}
                             </div>
                         </section>
 

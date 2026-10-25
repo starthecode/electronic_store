@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "build": "tsc",
-    "test": "tsx --test src/utils/affiliateTracking.test.ts src/services/affiliateAnalytics.test.ts src/services/homepageTemplate.test.ts src/services/storeBranding.test.ts src/services/product.test.ts src/services/inventory.test.ts src/services/specification.test.ts src/app.test.ts",
+    "test": "tsx --test src/utils/affiliateTracking.test.ts src/services/affiliateAnalytics.test.ts src/services/homepageTemplate.test.ts src/services/storeBranding.test.ts src/services/product.test.ts src/services/inventory.test.ts src/services/specification.test.ts src/services/public/cashfree.signature.test.ts src/validators/public/checkout.validator.test.ts src/app.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",

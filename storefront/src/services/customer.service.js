@@ -19,6 +19,23 @@ export const createOrder = (data) =>
         "Unable to place your order"
     );
 
+export const getCheckoutQuote = (data) =>
+    request(
+        () => api.post("/store/checkout/quote", data),
+        "Unable to calculate checkout total"
+    );
+
+export const getCheckoutConfig = () =>
+    request(
+        () => api.get("/store/checkout/config"),
+        "Unable to load payment methods"
+    );
+
+export const verifyOrderPayment = (orderId) =>
+    request(
+        () => api.get(`/store/checkout/payments/${encodeURIComponent(orderId)}/status`),
+        "Unable to verify payment status"
+    );
 
 export const cancelOrder = (id, note) =>
     request(
