@@ -48,15 +48,7 @@ import publicHomepageRoutes from "./routes/public/homepage.routes.js";
 
 const app = express();
 
-const trustedProxy = process.env.TRUST_PROXY?.trim();
-if (trustedProxy) {
-  app.set(
-    "trust proxy",
-    /^\d+$/.test(trustedProxy)
-      ? Number(trustedProxy)
-      : trustedProxy
-  );
-}
+app.set("trust proxy", 1);
 
 app.use(helmet());
 

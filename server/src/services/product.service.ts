@@ -469,58 +469,54 @@ export const deleteProduct = async (
   id: string,
   userId: string
 ) => {
-  const product =
-    await prisma.product.findUnique({
-      where: {
-        id,
-      },
+  await prisma.$transaction(async (tx) => {
+    const product = await tx.product.findUnique({
+      where: { id },
+      select: { id: true, name: true },
+    });
 
-      include: {
-        _count: {
-          select: {
-            variants: true,
-            images: true,
-            orderItems: true,
-          },
+    if (!product) {
+      throw new AppError("Product not found", 404);
+    }
+
+    const orderItemCount = await tx.orderItem.count({
+      where: {
+        variant: {
+          is: { productId: id },
         },
       },
     });
 
-  if (!product) {
-    throw new AppError(
-      "Product not found",
-      404
-    );
-  }
+    if (orderItemCount > 0) {
+      throw new AppError(
+        "Product cannot be deleted because it has order history",
+        409
+      );
+    }
 
-  if (
-    product._count.variants > 0 ||
-    product._count.images > 0
-  ) {
-    throw new AppError(
-      "Product cannot be deleted because variants or images are associated with it",
-      409
-    );
-  }
+    const inventoryTransactionCount =
+      await tx.inventoryTransaction.count({
+        where: {
+          variant: {
+            is: { productId: id },
+          },
+        },
+      });
 
-  if (product._count.orderItems > 0) {
-    throw new AppError(
-      "Product cannot be deleted because it has order history",
-      409
-    );
-  }
+    if (inventoryTransactionCount > 0) {
+      throw new AppError(
+        "Product cannot be deleted because it has inventory transaction history",
+        409
+      );
+    }
 
-  await prisma.product.delete({
-    where: {
-      id,
-    },
-  });
-
-  await createAuditLog({
-    userId,
-    action: "DELETE",
-    entity: "Product",
-    entityId: id,
-    description: `Deleted product "${product.name}"`,
-  });
+    await tx.product.delete({ where: { id } });
+    await createAuditLogTx(tx, {
+      userId,
+      action: "DELETE",
+      entity: "Product",
+      entityId: id,
+      description: `Deleted product "${product.name}"`,
+    });
+  }, { isolationLevel: "Serializable" });
 };
