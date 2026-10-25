@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
+import { groupProductSpecifications } from "../../utils/groupSpecifications";
 
 const reviews = [
     {
@@ -25,6 +26,9 @@ const reviews = [
 const ProductTabs = ({ product }) => {
     const [activeTab, setActiveTab] =
         useState("description");
+    const specificationGroups = groupProductSpecifications(
+        product.specifications || []
+    );
 
     const tabs = [
         {
@@ -124,30 +128,30 @@ const ProductTabs = ({ product }) => {
                         Additional Information
                     </h2>
 
-                    {product.specifications?.length ? (
-                        <div className="mt-6 overflow-hidden rounded-xl border border-gray-200">
-                            {product.specifications.map(
-                                (item) => (
-                                    <div
-                                        key={item.id}
-                                        className="grid grid-cols-1 border-b border-gray-200 last:border-b-0 sm:grid-cols-[220px_1fr]"
-                                    >
-                                        <div className="bg-[#f7f7f7] px-5 py-4 text-sm font-medium">
-                                            {
-                                                item
-                                                    .specification
-                                                    ?.name
-                                            }
-                                        </div>
-
-                                        <div className="px-5 py-4 text-sm text-gray-500">
-                                            {
-                                                item.value
-                                            }
-                                        </div>
+                    {specificationGroups.length ? (
+                        <div className="mt-6 space-y-6">
+                            {specificationGroups.map((group) => (
+                                <section key={group.id}>
+                                    <h3 className="mb-2 text-sm font-semibold text-gray-700">
+                                        {group.name}
+                                    </h3>
+                                    <div className="overflow-hidden rounded-xl border border-gray-200">
+                                        {group.items.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="grid grid-cols-1 border-b border-gray-200 last:border-b-0 sm:grid-cols-[220px_1fr]"
+                                            >
+                                                <div className="bg-[#f7f7f7] px-5 py-4 text-sm font-medium">
+                                                    {item.specification?.name || "Specification"}
+                                                </div>
+                                                <div className="px-5 py-4 text-sm text-gray-500">
+                                                    {item.value}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                )
-                            )}
+                                </section>
+                            ))}
                         </div>
                     ) : (
                         <p className="mt-5 text-sm text-gray-500">

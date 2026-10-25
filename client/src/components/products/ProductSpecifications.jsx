@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LoaderCircle,
   Pencil,
@@ -16,6 +16,9 @@ import {
   getSpecificationGroups,
   updateProductSpecification,
 } from "../../services/specification.service";
+import SpecificationManager from "./SpecificationManager";
+
+const unwrap = (response) => response?.data?.data ?? response?.data;
 
 const ProductSpecifications = ({ productId }) => {
   const [groups, setGroups] = useState([]);
@@ -30,6 +33,7 @@ const ProductSpecifications = ({ productId }) => {
   const [error, setError] = useState("");
 
   const [showAdd, setShowAdd] = useState(false);
+  const [showManager, setShowManager] = useState(false);
   const [editingSpecification, setEditingSpecification] =
     useState(null);
 
@@ -38,7 +42,7 @@ const ProductSpecifications = ({ productId }) => {
     useState("");
   const [value, setValue] = useState("");
 
-  const fetchProductSpecifications = async () => {
+  const fetchProductSpecifications = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -46,7 +50,7 @@ const ProductSpecifications = ({ productId }) => {
       const response =
         await getProductSpecifications(productId);
 
-      const data = response.data;
+      const data = unwrap(response);
 
       setAssignedSpecifications(
         Array.isArray(data?.specifications)
@@ -68,16 +72,16 @@ const ProductSpecifications = ({ productId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
 
-  const fetchGroups = async () => {
+  const fetchGroups = useCallback(async () => {
     try {
       setLoadingGroups(true);
       setError("");
 
       const response = await getSpecificationGroups();
 
-      const data = response.data;
+      const data = unwrap(response);
 
       setGroups(
         Array.isArray(data?.groups)
@@ -99,18 +103,21 @@ const ProductSpecifications = ({ productId }) => {
     } finally {
       setLoadingGroups(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (!productId) {
       return;
     }
 
-    Promise.all([
-      fetchProductSpecifications(),
-      fetchGroups(),
-    ]);
-  }, [productId]);
+    const timeoutId = window.setTimeout(() => {
+      void Promise.all([
+        fetchProductSpecifications(),
+        fetchGroups(),
+      ]);
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchProductSpecifications, fetchGroups, productId]);
 
   const selectedGroupData = useMemo(() => {
     return groups.find(
@@ -118,8 +125,12 @@ const ProductSpecifications = ({ productId }) => {
     );
   }, [groups, selectedGroup]);
 
-  const availableSpecifications =
-    selectedGroupData?.specifications || [];
+  const assignedSpecificationIds = new Set(
+    assignedSpecifications.map((item) => item.specificationId)
+  );
+  const availableSpecifications = (
+    selectedGroupData?.specifications || []
+  ).filter((specification) => !assignedSpecificationIds.has(specification.id));
 
   const resetForm = () => {
     setSelectedGroup("");
@@ -320,6 +331,13 @@ const ProductSpecifications = ({ productId }) => {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowManager(true)}
+            className="rounded-lg px-3 py-2 text-xs font-semibold ui-btn-outline"
+          >
+            Manage Definitions
+          </button>
           <button
             type="button"
             onClick={fetchProductSpecifications}
@@ -530,7 +548,11 @@ const ProductSpecifications = ({ productId }) => {
                     className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 disabled:bg-gray-100"
                   >
                     <option value="">
-                      Select specification
+                      {availableSpecifications.length
+                        ? "Select specification"
+                        : selectedGroup
+                          ? "No unassigned specifications in this group"
+                          : "Select group first"}
                     </option>
 
                     {availableSpecifications.map(
@@ -686,6 +708,15 @@ const ProductSpecifications = ({ productId }) => {
             </form>
           </div>
         </div>
+      )}
+
+      {showManager && (
+        <SpecificationManager
+          onClose={() => setShowManager(false)}
+          onChanged={() => {
+            fetchGroups();
+          }}
+        />
       )}
     </div>
   );

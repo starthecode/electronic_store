@@ -1,10 +1,15 @@
 import { prisma } from "../config/database.js";
+import { Prisma } from "../generated/prisma/client.js";
 import { AppError } from "../utils/AppError.js";
 
 import {
   createAuditLog,
   createAuditLogTx,
 } from "./auditLog.service.js";
+
+const isUniqueConstraintError = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === "P2002";
 
 const ensureGroup = async (groupId: string) => {
   const group = await prisma.specificationGroup.findUnique({
@@ -138,12 +143,20 @@ export const createSpecificationGroup = async (data: {
     );
   }
 
-  const group = await prisma.specificationGroup.create({
-    data: {
-      name: data.name,
-      sortOrder: data.sortOrder ?? 0,
-    },
-  });
+  let group;
+  try {
+    group = await prisma.specificationGroup.create({
+      data: {
+        name: data.name,
+        sortOrder: data.sortOrder ?? 0,
+      },
+    });
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      throw new AppError("Specification group already exists", 409);
+    }
+    throw error;
+  }
 
   await createAuditLog({
     userId,
@@ -314,8 +327,9 @@ export const createSpecification = async (
     );
   }
 
-  const specification =
-    await prisma.specification.create({
+  let specification;
+  try {
+    specification = await prisma.specification.create({
       data: {
         groupId,
         name: data.name,
@@ -324,6 +338,15 @@ export const createSpecification = async (
         group: true,
       },
     });
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      throw new AppError(
+        "Specification already exists in this group",
+        409
+      );
+    }
+    throw error;
+  }
 
   await createAuditLog({
     userId,
@@ -508,8 +531,9 @@ export const createProductSpecification = async (
     );
   }
 
-  const productSpecification =
-    await prisma.productSpecification.create({
+  let productSpecification;
+  try {
+    productSpecification = await prisma.productSpecification.create({
       data: {
         productId,
         specificationId: data.specificationId,
@@ -523,6 +547,15 @@ export const createProductSpecification = async (
         },
       },
     });
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      throw new AppError(
+        "This specification is already assigned to the product",
+        409
+      );
+    }
+    throw error;
+  }
 
   await createAuditLog({
     userId,
